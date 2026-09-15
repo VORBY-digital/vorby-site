@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#111211">
+  <title>VORBY — сайты и дизайн</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23111211'/%3E%3Cpath d='M12 17h11l9 25 9-25h11L37 49H27Z' fill='%23c7f36b'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+  <script src="rubik.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Перейти к содержимому</a>
+  <div class="page-progress" aria-hidden="true"></div>
+  <header class="header">
+    <div class="container header-inner">
+      <a class="brand" href="#home" aria-label="VORBY — на главную"><span class="brand-mark">v<span>.</span></span><span class="brand-name" data-brand>VORBY / digital</span></a>
+      <nav class="nav" id="navigation" aria-label="Главное меню">
+        <a href="#services">Услуги</a><a href="#work">Примеры</a><a href="#calculator">Стоимость</a><a href="#process">Как работаем</a>
+      </nav>
+      <a class="header-contact" href="#contact">Обсудим проект <span aria-hidden="true">↗</span></a>
+      <button class="menu-button" type="button" aria-expanded="false" aria-controls="navigation" aria-label="Открыть меню"><span></span><span></span></button>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero container" id="home">
+      <div class="hero-top"><span class="eyebrow">НЕБОЛЬШОЙ САЙТ. БОЛЬШОЕ ПЕРВОЕ ВПЕЧАТЛЕНИЕ.</span><span class="hero-index" aria-hidden="true">WEB & DESIGN / 01</span></div>
+      <div class="hero-layout">
+        <div class="hero-content">
+          <p class="intro">Привет, это <span data-owner>VORBY</span> <span class="wave" aria-hidden="true">✳</span></p>
+          <h1>Ваше дело.<br>Хороший<br><span class="rotating-line"><span id="rotating-word">сайт.</span><span class="text-caret" aria-hidden="true"></span></span></h1>
+          <p class="hero-description">Создаю сайты-визитки, лендинги и дизайн для тех, кто хочет красиво рассказать о себе и своём деле.</p>
+          <div class="hero-actions"><a class="button button-lime" href="#calculator">Рассчитать стоимость <span aria-hidden="true">↗</span></a><a class="text-link" href="#work">Посмотреть примеры <span aria-hidden="true">↓</span></a></div>
+          <div class="hero-notes"><span>Для специалистов и малого бизнеса</span><span>Удобно на телефоне</span></div>
+        </div>
+        <div class="hero-visual" aria-hidden="true">
+          <div class="visual-grid"></div>
+          <div class="visual-topline"><span>ИЗ ДЕТАЛЕЙ — В ЦЕЛОЕ</span><span>[ CREATE ]</span></div>
+          <div class="cube-glow"></div><div class="cube-shadow"></div>
+          <canvas id="rubik-canvas"></canvas>
+          <div class="cube-caption"><span class="cube-caption-line"></span><span id="cube-status">СОБИРАЕМ ПО ДЕТАЛЯМ</span></div>
+          <div class="floating-tag tag-one">&lt;ваш новый сайт /&gt;</div><div class="floating-tag tag-two">идея → дизайн → запуск</div>
+          <div class="visual-bottomline"><span>DESIGNED TO BE YOU</span><span>001 — ∞</span></div>
+        </div>
+      </div>
+      <div class="hero-bottom"><span>От первого наброска до работающей ссылки.</span><a href="#services" aria-label="Перейти к услугам">Листайте дальше <span aria-hidden="true">↓</span></a></div>
+    </section>
+
+    <div class="marquee" aria-hidden="true"><div class="marquee-track"><span>САЙТЫ-ВИЗИТКИ <i>✳</i> ЛЕНДИНГИ <i>✳</i> ДИЗАЙН <i>✳</i> ПОРТФОЛИО <i>✳</i> САЙТЫ-ВИЗИТКИ <i>✳</i> ЛЕНДИНГИ <i>✳</i> ДИЗАЙН <i>✳</i> ПОРТФОЛИО <i>✳</i></span><span>САЙТЫ-ВИЗИТКИ <i>✳</i> ЛЕНДИНГИ <i>✳</i> ДИЗАЙН <i>✳</i> ПОРТФОЛИО <i>✳</i> САЙТЫ-ВИЗИТКИ <i>✳</i> ЛЕНДИНГИ <i>✳</i> ДИЗАЙН <i>✳</i> ПОРТФОЛИО <i>✳</i></span></div></div>
+
+    <section class="section container" id="services">
+      <div class="section-heading reveal"><div><p class="eyebrow">01 / ЧТО Я ДЕЛАЮ</p><h2>Под вашу задачу.<br><span class="muted">С вниманием к деталям.</span></h2></div><p class="section-description">Помогаю собрать понятный образ вашего дела: от визуального стиля до готового сайта.</p></div>
+      <div class="service-grid">
+        <article class="service-card reveal"><div class="card-top"><span class="service-symbol" aria-hidden="true">&lt;/&gt;</span><span class="small-label">01</span></div><h3>Сайты</h3><p>Чтобы вас нашли, узнали и написали вам.</p><ul><li>Сайты-визитки и лендинги</li><li>Портфолио и персональные страницы</li><li>Промо-страницы услуг и событий</li><li>Онлайн-меню и прайс-листы</li></ul><div class="card-footer"><span>От <span data-service-price="site">6 000 ₽</span></span><a href="#calculator" data-preset="site" aria-label="Рассчитать стоимость сайта">Рассчитать <span aria-hidden="true">↗</span></a></div></article>
+        <article class="service-card reveal"><div class="card-top"><span class="service-symbol" aria-hidden="true">✳</span><span class="small-label">02</span></div><h3>Дизайн</h3><p>Визуальный стиль, который подходит именно вам.</p><ul><li>Макеты сайтов в Figma и редизайн</li><li>Простые логотипы, цвета и шрифты</li><li>Баннеры и оформление соцсетей</li><li>Презентации, меню и визитки</li></ul><div class="card-footer"><span>От <span data-service-price="design">1 000 ₽</span></span><a href="#calculator" data-preset="design" aria-label="Рассчитать стоимость дизайна">Рассчитать <span aria-hidden="true">↗</span></a></div></article>
+        <article class="service-card reveal"><div class="card-top"><span class="service-symbol" aria-hidden="true">＋</span><span class="small-label">03</span></div><h3>Доработки</h3><p>Когда сайту нужны изменения и немного заботы.</p><ul><li>Обновление текстов и фотографий</li><li>Новые блоки и изменения дизайна</li><li>Подключение домена</li><li>Инструкции и поддержка</li></ul><div class="card-footer"><span>От <span data-service-price="support">1 000 ₽</span></span><a href="#calculator" data-preset="support" aria-label="Рассчитать стоимость доработок">Рассчитать <span aria-hidden="true">↗</span></a></div></article>
+      </div>
+      <div class="included-strip reveal"><span class="included-title">В каждый новый сайт уже входят</span><div><span>Мобильная версия</span><span>Кнопки связи</span><span>Иконка сайта</span><span>Публикация</span><span>Исходные файлы</span></div></div>
+    </section>
+
+    <section class="section container" id="work">
+      <div class="section-heading reveal"><div><p class="eyebrow">02 / КАК ЭТО МОЖЕТ ВЫГЛЯДЕТЬ</p><h2>Разные задачи.<br><span class="muted">Один подход: аккуратно.</span></h2></div><p class="section-description">Демонстрационные концепты — примеры направления дизайна, а не выполненные клиентские заказы.</p></div>
+      <div class="work-grid">
+        <article class="work-card reveal"><div class="project-preview preview-photo"><div class="mock-nav"><span>FRAME.</span><span>Фотография · Портфолио</span></div><div class="photo-layout"><div><p class="mock-kicker">ПОРТРЕТНЫЙ ФОТОГРАФ</p><p class="photo-title">В каждом<br>кадре —<br><i>вы.</i></p><span class="mock-button">Посмотреть серии ↗</span></div><div class="photo-panel"><span class="abstract-frame" aria-hidden="true"></span><span class="panel-caption">СЕРИЯ 001 / СВЕТ И ФОРМА</span></div></div></div><div class="project-meta"><div><span class="project-type">ДЕМО-КОНЦЕПТ / ПОРТФОЛИО</span><h3>Личный взгляд</h3></div><a href="#calculator" data-preset="site" aria-label="Рассчитать похожий сайт-портфолио">↗</a></div></article>
+        <article class="work-card reveal"><div class="project-preview preview-studio"><div class="mock-nav"><span>FORMA / STUDIO</span><span>О нас · Проекты</span></div><div class="studio-layout"><p class="mock-kicker">ДИЗАЙН ИНТЕРЬЕРА</p><p class="studio-title">Пространство<br>для вашей<br><em>жизни.</em></p><div class="studio-bottom"><span>Функция.<br>Эстетика. Вы.</span><span class="studio-cross" aria-hidden="true">✳</span></div></div></div><div class="project-meta"><div><span class="project-type">ДЕМО-КОНЦЕПТ / ЛЕНДИНГ</span><h3>Форма и смысл</h3></div><a href="#calculator" data-preset="site" aria-label="Рассчитать похожий лендинг">↗</a></div></article>
+        <article class="work-card reveal"><div class="project-preview preview-menu"><div class="mock-nav"><span>СВОИ.</span><span>Кофе и хорошие разговоры</span></div><div class="menu-layout"><p class="menu-title">Как обычно?<span>Ваш любимый кофе здесь.</span></p><div class="mock-menu"><div><span>Эспрессо</span><span>160</span></div><div><span>Капучино</span><span>240</span></div><div><span>Флэт уайт</span><span>280</span></div></div><span class="menu-stamp">КОФЕ.<br>ЛЮДИ.<br>ТЕПЛО.</span></div></div><div class="project-meta"><div><span class="project-type">ДЕМО-КОНЦЕПТ / ОНЛАЙН-МЕНЮ</span><h3>Место для своих</h3></div><a href="#calculator" data-preset="site" aria-label="Рассчитать похожее онлайн-меню">↗</a></div></article>
+      </div>
+    </section>
+
+    <section class="calculator-section" id="calculator">
+      <div class="container">
+        <div class="section-heading reveal"><div><p class="eyebrow">03 / БЕЗ ГАДАНИЯ О ЦЕНЕ</p><h2>Соберите<br>свой проект<span class="lime">.</span></h2></div><p class="section-description">Выберите основу и нужные дополнения. Сумма обновится сразу — вы будете знать ориентир ещё до первого сообщения.</p></div>
+        <div class="calculator-layout reveal">
+          <div class="calculator-options">
+            <fieldset class="base-fieldset"><legend><span class="step-badge">1</span> Что нужно сделать?</legend><div class="base-options" id="base-options"><label class="base-option"><input type="radio" name="project" value="site" checked><span class="base-option-inner"><span class="base-icon" aria-hidden="true">&lt;/&gt;</span><strong>Сайт</strong><span>от 6 000 ₽</span></span></label><label class="base-option"><input type="radio" name="project" value="design"><span class="base-option-inner"><span class="base-icon" aria-hidden="true">✳</span><strong>Дизайн</strong><span>от 1 000 ₽</span></span></label><label class="base-option"><input type="radio" name="project" value="support"><span class="base-option-inner"><span class="base-icon" aria-hidden="true">＋</span><strong>Доработки</strong><span>от 1 000 ₽</span></span></label></div></fieldset>
+            <div class="base-description" id="base-description">Одностраничный сайт до 5 блоков с базовым оформлением, по готовым текстам и изображениям. Мобильная версия, кнопки связи, иконка, публикация, исходники и два раунда правок включены.</div>
+            <fieldset class="extras-fieldset"><legend><span class="step-badge">2</span> Добавим что-нибудь?</legend><div id="extras-list"><p class="loading-note">Включите JavaScript, чтобы выбрать дополнения и рассчитать стоимость.</p></div></fieldset>
+            <div class="calculator-footnote">Стоимость покупки и продления домена оплачивается отдельно его регистратору. Подключение — моя работа по настройке адреса сайта.</div>
+          </div>
+          <aside class="estimate-card" id="estimate" aria-label="Расчёт стоимости">
+            <div class="estimate-top"><span class="eyebrow">ВАШ ПРОЕКТ</span><span aria-hidden="true">↗</span></div>
+            <h3 id="estimate-name">Сайт-визитка</h3><div class="estimate-lines" id="estimate-lines"><div><span>Создание сайта</span><span>6 000 ₽</span></div></div>
+            <div class="estimate-total"><span>Примерная стоимость</span><output id="estimate-total" aria-live="polite" aria-atomic="true">6 000 ₽</output></div>
+            <p class="estimate-note">Итоговую цену согласуем после обсуждения задачи. Она зависит от объёма и сложности проекта.</p>
+            <a class="button button-lime full-width" id="estimate-contact" href="#contact">Обсудить этот проект <span aria-hidden="true">↗</span></a>
+            <button class="copy-button" id="copy-estimate" type="button">Скопировать расчёт <span aria-hidden="true">⧉</span></button>
+            <button class="reset-button" id="reset-estimate" type="button">Сбросить выбор</button>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="section container" id="process">
+      <div class="section-heading reveal"><div><p class="eyebrow">04 / ОТ ИДЕИ ДО ЗАПУСКА</p><h2>Понятно на<br><span class="muted">каждом шаге.</span></h2></div><p class="section-description">Заранее договариваемся об объёме, цене, сроках и правках. Вы видите результат по ходу работы.</p></div>
+      <div class="process-grid"><article class="process-step reveal"><span>01</span><h3>Знакомимся</h3><p>Рассказываете о своём деле, задаче и пожеланиях. Собираем тексты, фотографии и примеры.</p></article><article class="process-step reveal"><span>02</span><h3>Договариваемся</h3><p>Определяем структуру, стоимость и сроки. Фиксируем условия и предоплату.</p></article><article class="process-step reveal"><span>03</span><h3>Создаём</h3><p>Показываю промежуточный результат. Обсуждаем и вносим согласованные правки.</p></article><article class="process-step reveal"><span>04</span><h3>Запускаем</h3><p>После согласования публикую сайт и передаю файлы и доступы. Дальше можно заказать обновления.</p></article></div>
+    </section>
+
+    <section class="section container faq-section" id="faq">
+      <div class="faq-heading reveal"><p class="eyebrow">05 / ЕСТЬ ВОПРОС?</p><h2>Давайте<br><span class="muted">разберёмся.</span></h2></div>
+      <div class="faq-list reveal">
+        <details><summary>Что я получу после создания сайта?<span aria-hidden="true">＋</span></summary><p>Готовый сайт по ссылке, исходные файлы и согласованные доступы. Публикация, мобильная версия, кнопки связи и иконка сайта входят в создание нового сайта.</p></details>
+        <details><summary>Какие сайты вы создаёте?<span aria-hidden="true">＋</span></summary><p>Сайты-визитки, лендинги, портфолио, промо-страницы и онлайн-меню. Это сайты с информацией о вас и ваших услугах. Регистрация, личные кабинеты, базы клиентов, корзина и онлайн-оплата в текущие услуги не входят.</p></details>
+        <details><summary>Нужно ли платить за хостинг и домен?<span aria-hidden="true">＋</span></summary><p>Для статичного сайта подберём подходящий хостинг, в том числе бесплатный. Свой домен необязателен. Если он нужен, вы покупаете и продлеваете его у регистратора; подключение можно добавить в расчёт. Домен оформляется на вас.</p></details>
+        <details><summary>Что делать, если нет текста или дизайна?<span aria-hidden="true">＋</span></summary><p>Можно добавить помощь со структурой, текстами, подбором изображений или индивидуальным дизайном. Для начала достаточно рассказать о себе, своих услугах и людях, которым они нужны.</p></details>
+        <details><summary>Можно будет изменить сайт после запуска?<span aria-hidden="true">＋</span></summary><p>Да. Можно заказать замену текста и фотографий, новые блоки или изменения оформления. Сайт без админ-панели: изменения вносятся в его файлы. По желанию подготовлю инструкцию для простых самостоятельных обновлений.</p></details>
+        <details><summary>Почему калькулятор показывает примерную цену?<span aria-hidden="true">＋</span></summary><p>Калькулятор считает стандартные услуги. Сложные анимации, большой объём материалов и нестандартный функционал обсуждаются отдельно. Точную цену и количество правок фиксируем до начала работы.</p></details>
+      </div>
+    </section>
+
+    <section class="contact-section container reveal" id="contact">
+      <div class="contact-panel"><div><p class="eyebrow">ЕСТЬ ИДЕЯ? ДАВАЙТЕ ОБСУДИМ.</p><h2>Начнём с<br><span>«привет».</span></h2><p>Расскажите, какой сайт или дизайн вам нужен.<br>Вместе определим, с чего начать.</p></div><div class="contact-action"><a class="button button-dark" id="telegram-link" href="#contact">Написать в Telegram <span aria-hidden="true">↗</span></a><p id="contact-note">Контакт для заявок скоро появится.</p><span class="contact-star" aria-hidden="true">✳</span></div></div>
+    </section>
+  </main>
+
+  <div class="mobile-estimate" id="mobile-estimate"><div><span>Примерная стоимость</span><strong id="mobile-estimate-total">6 000 ₽</strong></div><a href="#estimate">Весь расчёт <span aria-hidden="true">↓</span></a></div>
+  <footer class="footer container"><a class="brand" href="#home"><span class="brand-mark">v<span>.</span></span><span data-brand>VORBY / digital</span></a><p>Сайты и дизайн с вниманием к вашему делу.</p><span>© <span id="year">2026</span> <span data-owner>VORBY</span></span></footer>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <dialog class="copy-dialog" id="copy-dialog"><div class="copy-dialog-heading"><h3>Ваш расчёт</h3><button type="button" id="close-copy-dialog" aria-label="Закрыть">×</button></div><p>Скопируйте текст и отправьте вместе с описанием задачи.</p><textarea id="estimate-text" readonly aria-label="Текст расчёта"></textarea><button type="button" class="button button-lime" id="select-estimate-text">Выделить текст</button></dialog>
+</body>
+</html>
