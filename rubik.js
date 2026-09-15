@@ -111,11 +111,11 @@
   if (typeof module!=='undefined'&&module.exports) module.exports={CubeState,SCRAMBLE,inverseMoves,makeCubieMesh,multiply,rotation,transformPoint,perspective};
   if (typeof document==='undefined') return;
 
-  function startCube() {
-    const canvas=document.getElementById('rubik-canvas');
+  function startCube(canvasId='rubik-canvas',scrollDriven=false) {
+    const canvas=document.getElementById(canvasId);
     if (!canvas) return;
-    const visual=canvas.closest('.hero-visual');
-    const status=document.getElementById('cube-status');
+    const visual=canvas.closest('.hero-visual')||canvas.parentElement;
+    const status=document.getElementById(scrollDriven?'nav-cube-status':'cube-status')||{textContent:''};
     const motion=window.matchMedia('(prefers-reduced-motion: reduce)');
     const cube=new CubeState();
     let gl;
@@ -196,6 +196,19 @@
     }
     resetSequence();
 
+    function syncScrollCube() {
+      if (!scrollDriven) return;
+      const available=Math.max(1,document.documentElement.scrollHeight-window.innerHeight);
+      const progress=Math.max(0,Math.min(1,window.scrollY/available));
+      const raw=progress*queue.length;
+      const completed=Math.min(queue.length,Math.floor(raw));
+      cube.reset();
+      SCRAMBLE.forEach(move=>cube.turn(move));
+      for (let i=0;i<completed;i++) cube.turn(queue[i]);
+      active=completed<queue.length?{move:queue[completed],elapsed:(raw-completed)*700,duration:700}:null;
+      draw();
+    }
+
     function advance(delta) {
       if (active) {
         active.elapsed+=delta;
@@ -275,14 +288,15 @@
     }
     function tick(time) {
       frame=0;
-      if (!visible||document.hidden||motion.matches||lost) {lastTime=0;return;}
+      if (scrollDriven||!visible||document.hidden||motion.matches||lost) {lastTime=0;return;}
       const delta=lastTime?Math.min(50,time-lastTime):0;lastTime=time;elapsed+=delta;
       tiltX+=(pointerX-tiltX)*.06;tiltY+=(pointerY-tiltY)*.06;
       advance(delta);draw();frame=requestAnimationFrame(tick);
     }
     function sync() {
       if (frame) cancelAnimationFrame(frame);frame=0;lastTime=0;
-      if (motion.matches) {cube.reset();active=null;elapsed=0;tiltX=0;tiltY=0;draw();}
+      if (scrollDriven) {cube.reset();SCRAMBLE.forEach(move=>cube.turn(move));active=null;syncScrollCube();}
+      else if (motion.matches) {cube.reset();active=null;elapsed=0;tiltX=0;tiltY=0;draw();}
       else if (visible&&!document.hidden&&!lost) frame=requestAnimationFrame(tick);
     }
     visual.addEventListener('pointermove',event=>{
@@ -296,6 +310,7 @@
     if ('IntersectionObserver' in window) new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;sync();}).observe(visual);
     document.addEventListener('visibilitychange',sync);
     motion.addEventListener('change',()=>{resetSequence();sync();});
+    if (scrollDriven) window.addEventListener('scroll',syncScrollCube,{passive:true});
     canvas.addEventListener('webglcontextlost',event=>{event.preventDefault();lost=true;sync();});
     canvas.addEventListener('webglcontextrestored',()=>{lost=false;setupGL();resize();sync();});
     window.addEventListener('pagehide',()=>{if(frame)cancelAnimationFrame(frame);frame=0;lastTime=0;});
@@ -304,4 +319,6 @@
   }
   if (document.readyState==='loading') document.addEventListener('DOMContentLoaded',startCube,{once:true});
   else startCube();
+  if (document.readyState==='loading') document.addEventListener('DOMContentLoaded',()=>startCube('rubik-nav-canvas',true),{once:true});
+  else startCube('rubik-nav-canvas',true);
 })();
