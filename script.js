@@ -215,6 +215,16 @@ const SITE_CONFIG = {
       entries.forEach(entry => {if (entry.isIntersecting) {entry.target.classList.add('visible'); revealObserver.unobserve(entry.target);}});
     }, {threshold:.08});
     $$('.reveal').forEach(element => revealObserver.observe(element));
+
+    // Мини-сайты начинают прокрутку, когда посетитель дошёл до примеров.
+    const previewObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('preview-active');
+        previewObserver.unobserve(entry.target);
+      });
+    }, {threshold:.45});
+    $$('.live-preview-card').forEach(card => previewObserver.observe(card));
   }
 
   const progress = $('.page-progress');
