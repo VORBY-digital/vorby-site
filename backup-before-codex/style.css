@@ -1,0 +1,502 @@
+/* --- СТРОГИЕ ПЕРЕМЕННЫЕ --- */
+:root {
+  --bg-color: #050505;
+  --card-bg: #0f0f0f;
+  --card-border: #262626;
+  --primary: #dc2626; /* Агрессивный красный */
+  --primary-hover: #b91c1c;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --transition: all 0.3s ease;
+}
+
+/* --- БАЗОВЫЕ НАСТРОЙКИ --- */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  scroll-behavior: smooth;
+  --parallax-y: 0px; /* Дефолтное значение для параллакса */
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+/* --- ГЕОМЕТРИЧЕСКИЙ ФОН --- */
+.parallax-bg {
+  position: fixed;
+  top: -50px; 
+  left: -50px; 
+  right: -50px; 
+  bottom: -50px;
+  z-index: -2;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  will-change: transform, background-position;
+}
+
+/* --- F1 МАШИНКА (ВИД СВЕРХУ) --- */
+.f1-car-wrapper {
+  position: fixed;
+  right: 8%;
+  top: -200px;
+  z-index: -1;
+  opacity: 0.85;
+  pointer-events: none; 
+  filter: drop-shadow(0 0 15px rgba(220, 38, 38, 0.7));
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); 
+  will-change: transform;
+}
+
+/* --- АНИМАЦИИ ПОЯВЛЕНИЯ --- */
+.fade-in {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.fade-in.appear { 
+  opacity: 1; 
+  transform: translateY(var(--parallax-y)); 
+}
+
+/* --- НАВИГАЦИЯ --- */
+header {
+  position: sticky; 
+  top: 0;
+  background: rgba(5, 5, 5, 0.9);
+  border-bottom: 1px solid var(--card-border);
+  z-index: 100;
+}
+
+.nav-container {
+  max-width: 1100px; 
+  margin: auto;
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center;
+  padding: 16px 24px;
+}
+
+.logo-wrapper {
+  display: flex; 
+  align-items: center; 
+  gap: 15px;
+  text-decoration: none;
+}
+
+.logo {
+  font-size: 1.5rem; 
+  font-weight: 800; 
+  letter-spacing: 2px;
+  color: #fff;
+}
+
+.nav-links { 
+  display: flex; 
+  gap: 30px; 
+  list-style: none; 
+}
+
+.nav-links a {
+  color: var(--text-muted); 
+  text-decoration: none;
+  font-weight: 600; 
+  font-size: 0.85rem; 
+  letter-spacing: 1px;
+  text-transform: uppercase; 
+  transition: var(--transition);
+}
+
+.nav-links a:hover { 
+  color: var(--primary); 
+}
+
+.nav-btn { 
+  padding: 8px 16px; 
+  font-size: 0.8rem; 
+}
+
+/* --- 3D КУБИК РУБИКА --- */
+#rubik-container {
+  width: 30px; 
+  height: 30px;
+  perspective: 800px;
+}
+
+.cube {
+  width: 100%; 
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+}
+
+.face {
+  position: absolute; 
+  width: 30px; 
+  height: 30px;
+  border: 1px solid #000;
+  background-image: 
+    linear-gradient(#000 1.5px, transparent 1.5px),
+    linear-gradient(90deg, #000 1.5px, transparent 1.5px);
+  background-size: 10px 10px;
+  background-position: -1px -1px;
+}
+
+.face.front  { background-color: var(--primary); }
+.face.back   { background-color: #ef4444; }
+.face.right  { background-color: #ffffff; }
+.face.left   { background-color: #555555; }
+.face.top    { background-color: #222222; }
+.face.bottom { background-color: #999999; }
+
+/* --- ОСНОВНОЙ КОНТЕЙНЕР --- */
+.container { 
+  max-width: 1100px; 
+  margin: auto; 
+  padding: 0 24px; 
+}
+
+section { 
+  padding: 90px 0; 
+}
+
+.section-title { 
+  margin-bottom: 50px; 
+  text-align: left; 
+}
+
+.section-title h2 { 
+  font-size: 2rem; 
+  font-weight: 800; 
+  margin-bottom: 10px; 
+  letter-spacing: -1px; 
+}
+
+.title-line { 
+  width: 60px; 
+  height: 4px; 
+  background: var(--primary); 
+}
+
+/* --- HERO СЕКЦИЯ --- */
+.hero { 
+  padding: 140px 0 100px; 
+  text-align: center; 
+  will-change: transform, opacity;
+}
+
+.badge {
+  display: inline-block; 
+  padding: 6px 14px;
+  background: transparent; 
+  border: 1px solid var(--card-border);
+  color: var(--text-muted); 
+  font-size: 0.75rem;
+  font-family: 'JetBrains Mono', monospace; 
+  letter-spacing: 1px;
+  margin-bottom: 24px;
+}
+
+.hero h1 { 
+  font-size: 3.8rem; 
+  font-weight: 800; 
+  line-height: 1.1; 
+  margin-bottom: 24px; 
+  text-transform: uppercase; 
+}
+
+.text-red { 
+  color: var(--primary); 
+}
+
+.hero p { 
+  max-width: 600px; 
+  margin: 0 auto 40px; 
+  color: var(--text-muted); 
+  font-size: 1.1rem; 
+}
+
+.hero-btns { 
+  display: flex; 
+  justify-content: center; 
+  gap: 16px; 
+  flex-wrap: wrap; 
+}
+
+/* --- КНОПКИ --- */
+.btn {
+  display: inline-flex; 
+  align-items: center; 
+  justify-content: center;
+  padding: 14px 28px; 
+  font-weight: 700; 
+  font-size: 0.9rem;
+  text-decoration: none; 
+  cursor: pointer; 
+  border: none;
+  letter-spacing: 1px; 
+  transition: var(--transition);
+}
+
+.btn-primary { 
+  background: var(--primary); 
+  color: #fff; 
+}
+
+.btn-primary:hover { 
+  background: var(--primary-hover); 
+  transform: translateY(-2px); 
+}
+
+.btn-secondary { 
+  background: transparent; 
+  color: var(--text-main); 
+  border: 1px solid var(--card-border); 
+}
+
+.btn-secondary:hover { 
+  border-color: var(--primary); 
+  color: var(--primary); 
+}
+
+/* --- КАРТОЧКИ УСЛУГ --- */
+.services-grid { 
+  display: grid; 
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); 
+  gap: 20px; 
+}
+
+.service-card {
+  background: var(--card-bg); 
+  border: 1px solid var(--card-border);
+  padding: 40px 24px; 
+  transition: var(--transition);
+  position: relative; 
+  overflow: hidden;
+}
+
+.service-card:hover { 
+  border-color: var(--primary); 
+  transform: translateY(calc(var(--parallax-y) - 10px)) scale(1.02); 
+}
+
+.service-number {
+  font-family: 'JetBrains Mono', monospace; 
+  font-size: 2.5rem;
+  font-weight: 800; 
+  color: rgba(255,255,255,0.05);
+  position: absolute; 
+  top: -10px; 
+  right: 10px;
+}
+
+.service-card h3 { 
+  font-size: 1.2rem; 
+  margin-bottom: 16px; 
+  text-transform: uppercase; 
+}
+
+.service-card p { 
+  color: var(--text-muted); 
+  font-size: 0.95rem; 
+}
+
+/* --- КАЛЬКУЛЯТОР --- */
+.calculator-wrapper {
+  background: var(--card-bg); 
+  border: 1px solid var(--card-border);
+  padding: 40px; 
+  max-width: 800px;
+  transition: transform 0.2s ease-out, border-color 0.3s ease;
+  will-change: transform;
+}
+
+.calc-group { 
+  margin-bottom: 40px; 
+}
+
+.calc-label { 
+  font-weight: 700; 
+  margin-bottom: 16px; 
+  display: block; 
+  color: var(--primary); 
+  font-size: 0.9rem; 
+  letter-spacing: 1px; 
+}
+
+.options-grid { 
+  display: grid; 
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
+  gap: 12px; 
+}
+
+.calc-option { 
+  position: relative; 
+}
+
+.calc-option input { 
+  position: absolute; 
+  opacity: 0; 
+  cursor: pointer; 
+}
+
+.calc-option label {
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center;
+  padding: 16px; 
+  background: #050505; 
+  border: 1px solid var(--card-border);
+  cursor: pointer; 
+  font-size: 0.95rem; 
+  font-weight: 600; 
+  transition: var(--transition);
+}
+
+.calc-option label:hover { 
+  border-color: #555; 
+}
+
+.calc-option input:checked + label { 
+  border-color: var(--primary); 
+  background: rgba(220, 38, 38, 0.05); 
+}
+
+.calc-price-tag { 
+  font-family: 'JetBrains Mono', monospace; 
+  color: var(--text-muted); 
+  font-size: 0.9rem; 
+}
+
+.calc-option input:checked + label .calc-price-tag { 
+  color: var(--primary); 
+}
+
+.calc-result-box {
+  border-top: 1px solid var(--card-border); 
+  padding-top: 30px;
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+  flex-wrap: wrap; 
+  gap: 20px;
+}
+
+.total-title { 
+  color: var(--text-muted); 
+  font-size: 0.85rem; 
+  font-weight: 700; 
+  letter-spacing: 1px; 
+}
+
+.total-price { 
+  font-family: 'JetBrains Mono', monospace; 
+  font-size: 2.5rem; 
+  font-weight: 800; 
+  color: #fff; 
+}
+
+/* --- FAQ --- */
+.faq-container { 
+  max-width: 800px; 
+  display: flex; 
+  flex-direction: column; 
+  gap: 12px; 
+}
+
+.faq-item { 
+  background: var(--card-bg); 
+  border: 1px solid var(--card-border); 
+  transition: var(--transition); 
+}
+
+.faq-item:hover { 
+  border-color: #555; 
+}
+
+.faq-header { 
+  padding: 20px 24px; 
+  cursor: pointer; 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  font-weight: 600; 
+}
+
+.faq-icon { 
+  font-size: 1.5rem; 
+  color: var(--primary); 
+  transition: transform 0.3s; 
+}
+
+.faq-body { 
+  max-height: 0; 
+  overflow: hidden; 
+  padding: 0 24px; 
+  color: var(--text-muted); 
+  font-size: 0.95rem; 
+  transition: all 0.4s ease; 
+}
+
+.faq-item.active { 
+  border-color: var(--primary); 
+}
+
+.faq-item.active .faq-icon { 
+  transform: rotate(45deg); 
+}
+
+.faq-item.active .faq-body { 
+  max-height: 300px; 
+  padding-bottom: 20px; 
+}
+
+/* --- ПОДВАЛ --- */
+footer { 
+  border-top: 1px solid var(--card-border); 
+  padding: 50px 0; 
+  text-align: center; 
+}
+
+.footer-socials { 
+  display: flex; 
+  justify-content: center; 
+  gap: 30px; 
+  margin: 20px 0; 
+}
+
+.footer-socials a { 
+  color: var(--text-muted); 
+  text-decoration: none; 
+  font-size: 0.9rem; 
+  font-weight: 600; 
+  letter-spacing: 1px; 
+  transition: var(--transition); 
+}
+
+.footer-socials a:hover { 
+  color: var(--primary); 
+}
+
+.copyright { 
+  color: #555; 
+  font-size: 0.8rem; 
+  font-family: 'JetBrains Mono', monospace; 
+}
+
+/* --- АДАПТИВНОСТЬ ДЛЯ ТЕЛЕФОНОВ --- */
+@media (max-width: 768px) {
+  .hero h1 { font-size: 2.5rem; }
+  .nav-links { display: none; }
+  .calculator-wrapper { padding: 24px 16px; }
+  .calc-result-box { flex-direction: column; align-items: flex-start; }
+  .calc-result-box .btn { width: 100%; }
+}
