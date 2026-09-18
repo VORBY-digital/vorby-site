@@ -10,41 +10,60 @@ const SITE_CONFIG = {
   projects: {
     site: {
       name: 'Сайт-визитка', label: 'Сайт', baseLabel: 'Создание сайта', price: 6000,
+      extrasLegend: 'Что добавить к сайту?',
       description: 'Одностраничный сайт до 5 блоков с базовым оформлением, по готовым текстам и изображениям. Мобильная версия, кнопки связи, иконка, публикация, исходники и два раунда правок включены.',
+      details: {
+        includes: 'Одна страница до 5 блоков, адаптация под телефон, кнопки связи, иконка сайта, публикация на GitHub Pages, исходные файлы и два раунда правок до запуска.',
+        required: 'Готовые тексты, фотографии, контакты, список услуг и примеры сайтов, которые вам нравятся.',
+        note: 'Не входят интернет-магазин, регистрация, база данных, SEO-продвижение, написание текстов и серверная логика.'
+      },
       extras: [
-        {id:'domain', title:'Подключение домена', description:'Настройка вашего адреса. Покупка и продление домена отдельно.', price:500},
-        {id:'custom-design', title:'Индивидуальный дизайн', description:'Макет в Figma: оформление, цвета и шрифты под вашу задачу.', price:3500},
-        {id:'texts', title:'Помощь с текстами и структурой', description:'До 5 блоков и 3 000 знаков по информации о вашем деле.', price:1500},
-        {id:'images', title:'Подбор изображений', description:'До 5 изображений. Покупка платных фотографий отдельно.', price:500},
-        {id:'extra-block', title:'Дополнительный блок', description:'Один простой блок сверх пяти включённых: отзывы или прайс.', price:800},
-        {id:'instruction', title:'Инструкция по обновлению', description:'Как самостоятельно заменить текст и фотографии в файлах.', price:500},
-        {id:'maintenance', title:'Поддержка на 30 дней', description:'До 3 небольших обновлений текстов или фотографий.', price:2000},
-        {id:'revision', title:'Дополнительный раунд правок', description:'Ещё один список правок в рамках согласованной структуры.', price:1000}
+        {id:'domain', title:'Подключение домена', description:'Настрою адрес сайта и HTTPS.', price:500, details:{includes:'Привязка купленного домена к сайту, настройка DNS и проверка защищённого подключения HTTPS.', required:'Домен, купленный и оформленный на вас, плюс доступ к кабинету регистратора.', note:'Покупка и ежегодное продление домена оплачиваются вами напрямую регистратору.'}},
+        {id:'custom-design', title:'Индивидуальный дизайн', description:'Цвета, шрифты и оформление под вашу задачу.', price:3500, details:{includes:'Индивидуальное оформление страницы, палитра, шрифты, композиция блоков и адаптация выбранного стиля под телефон.', required:'Кратко расскажите о деле, целевой аудитории и пришлите 2–3 примера сайтов, которые вам близки.', note:'Палитра и шрифтовая пара уже входят в эту услугу. Полный брендбук и сложный логотип не входят.'}},
+        {id:'images', title:'Подбор изображений', description:'До 5 подходящих бесплатных изображений.', price:500, details:{includes:'Поиск до 5 изображений в подходящем стиле на бесплатных фотостоках и подготовка их для сайта.', required:'Тема сайта, предпочтения по атмосфере и ваши собственные фото, если они есть.', note:'Платные лицензии, профессиональная ретушь и съёмка не входят.'}},
+        {id:'instruction', title:'Инструкция по обновлению', description:'Памятка по замене контента в файлах.', price:500, details:{includes:'Понятная инструкция: где заменить текст, ссылку или фотографию в файлах сайта.', required:'Скажите, какие элементы вы хотите обновлять самостоятельно.', note:'Подходит для простых статичных сайтов без админ-панели.'}},
+        {id:'maintenance', title:'Поддержка на 30 дней', description:'До 3 небольших обновлений после запуска.', price:2000, details:{includes:'До 3 небольших обновлений текста, фотографий, ссылок или контактов в течение 30 дней после публикации.', required:'Присылайте изменения одним сообщением: старый вариант, новый вариант и место на сайте.', note:'Новые блоки, новый дизайн и сложные изменения считаются по разделу «Доработки».'}}
       ]
     },
     design: {
-      name: 'Дизайн', label: 'Дизайн', baseLabel: 'Один баннер или креатив', price:1000,
-      description: 'Один баннер или рекламный креатив по вашему содержанию. Подбор оформления, цветов и шрифтов, два раунда правок и готовый файл включены.',
+      name: 'Дизайн', label: 'Дизайн', baseLabel: 'Выберите услугу', price:0, fromPrice:500,
+      extrasLegend: 'Выберите услуги дизайна',
+      description: 'Выберите одну услугу или несколько. Каждая считается отдельно — например, обычная презентация до 5 слайдов стоит 500 ₽, без доплаты за баннер.',
+      details: {
+        includes: 'Работа по готовым материалам клиента и согласованный итоговый файл в нужном формате.',
+        required: 'Текст, размер или площадка, логотип и фотографии, если они должны быть использованы.',
+        note: 'Если нужна сложная иллюстрация, большой объём текста или нестандартная анимация, сначала оценю задачу отдельно.'
+      },
       extras: [
-        {id:'figma', title:'Макет сайта в Figma', description:'Одностраничный сайт до 5 блоков, версии для компьютера и телефона.', price:4000},
-        {id:'logo', title:'Простой логотип или знак', description:'Один концепт простого знака. Полный фирменный стиль отдельно.', price:1500},
-        {id:'social', title:'Оформление соцсетей', description:'Обложка и аватар для одного профиля.', price:1500},
-        {id:'slides', title:'Дизайн презентации', description:'До 5 слайдов по готовому тексту.', price:2500},
-        {id:'print', title:'Меню, прайс-лист или визитка', description:'Один макет до 2 сторон по готовому тексту. Печать отдельно.', price:1000},
-        {id:'style', title:'Палитра и шрифтовая пара', description:'Небольшая памятка для единого оформления ваших материалов.', price:1000},
-        {id:'redesign', title:'Концепт редизайна', description:'Новое оформление одного экрана существующего сайта.', price:2000}
+        {id:'banner', title:'Баннер или рекламный креатив', description:'Один баннер для сайта, рекламы или соцсетей.', price:1000, details:{includes:'Один готовый баннер в согласованном размере, оформление и два небольших раунда правок.', required:'Готовый текст, размер баннера, площадка размещения и логотип/фото при наличии.', note:'Не включает написание текста, покупку изображений и создание серии баннеров.'}},
+        {id:'figma', title:'Макет сайта в Figma', description:'Страница до 5 блоков, компьютер и телефон.', price:4000, details:{includes:'Макет одностраничного сайта до 5 блоков, палитра, шрифты и версии для компьютера и телефона.', required:'Структура страницы, готовые тексты, материалы и примеры по стилю.', note:'Это дизайн-макет. Вёрстка и публикация сайта заказываются отдельно в разделе «Сайт».'}},
+        {id:'logo', title:'Простой логотип или знак', description:'Текстовый знак или несложный символ.', price:1500, details:{includes:'Один выбранный вариант простого логотипа, PNG на прозрачном фоне и базовая версия для светлого/тёмного фона.', required:'Название, сфера деятельности, желаемое настроение и примеры того, что нравится.', note:'Не входит полноценный фирменный стиль, детальное исследование конкурентов и неограниченное число концептов.'}},
+        {id:'social', title:'Оформление соцсетей', description:'Аватар, обложка и несколько шаблонов.', price:1500, details:{includes:'Аватар, обложка и до 3 простых шаблонов публикаций или сторис для одного профиля.', required:'Ссылка на профиль, логотип, тексты и размеры нужных площадок.', note:'Ведение аккаунта и подготовка регулярного контента не входят.'}},
+        {id:'slides', title:'Презентация в PowerPoint', description:'До 5 слайдов по готовому тексту.', price:500, details:{includes:'Оформление до 5 слайдов в PowerPoint и готовый файл .pptx.', required:'Готовый текст по слайдам, логотип, изображения и порядок материалов.', note:'Дополнительный слайд — 100–150 ₽. Написание текста, сложная инфографика и анимация не входят.'}},
+        {id:'print', title:'Макет для печати', description:'Визитка, листовка, меню или прайс.', price:1000, details:{includes:'Один макет до 2 сторон для визитки, листовки, небольшого меню или прайс-листа.', required:'Точный текст, размеры, логотип и требования типографии, если они уже известны.', note:'Печать и доставка оплачиваются отдельно.'}},
+        {id:'style', title:'Палитра и шрифтовая пара', description:'Небольшая памятка по стилю материалов.', price:1000, details:{includes:'Основные и дополнительные цвета, шрифт заголовков и текста, короткая памятка по применению.', required:'Описание дела, целевая аудитория и примеры визуального направления.', note:'Для индивидуального дизайна сайта эта услуга уже включена и отдельно не добавляется.'}},
+        {id:'redesign', title:'Рестайлинг одного экрана', description:'Обновление цветов, шрифтов и композиции.', price:2000, details:{includes:'Новый визуальный вариант одного экрана существующего сайта или макета.', required:'Ссылка или исходник, цель изменений и примеры желаемого результата.', note:'Полный редизайн сайта и разработка новых страниц оцениваются отдельно.'}}
       ]
     },
     support: {
-      name: 'Доработки сайта', label: 'Доработки', baseLabel: 'Обновление контента', price:1000,
-      description: 'Замена текстов и до 5 фотографий на существующей статичной странице. Перед началом посмотрю исходные файлы и уточню возможность доработки.',
+      name: 'Доработки сайта', label: 'Доработки', baseLabel: 'Выберите доработки', price:0, fromPrice:150, minimum:300,
+      extrasLegend: 'Что нужно изменить?',
+      description: 'Выберите нужные изменения. Для чужого сайта сначала посмотрю исходники: иногда его устройство не позволяет внести правку быстро и безопасно.',
+      details: {
+        includes: 'Оценка выбранной задачи и внесение согласованных изменений в статичный сайт.',
+        required: 'Ссылка на сайт, доступ к исходным файлам или репозиторию, а также точный список изменений.',
+        note: 'Две правки до запуска нового сайта уже входят в разработку. Этот раздел — для изменений после публикации.'
+      },
       extras: [
-        {id:'domain', title:'Подключение домена', description:'Настройка адреса сайта. Сам домен оплачивается отдельно.', price:500},
-        {id:'new-block', title:'Новый блок', description:'Один простой блок в оформлении существующего сайта.', price:1200},
-        {id:'restyle', title:'Изменение оформления', description:'Цвета, шрифты и отступы одного экрана.', price:1500},
-        {id:'fix', title:'Исправление небольшой ошибки', description:'Одна проблема с отображением или кнопкой после оценки исходников.', price:1000},
-        {id:'instruction', title:'Инструкция по обновлению', description:'Памятка для самостоятельной замены контента.', price:500},
-        {id:'maintenance', title:'Поддержка на 30 дней', description:'До 3 небольших обновлений текстов или фотографий.', price:2000}
+        {id:'text', title:'Замена небольшого текста', description:'До 3 коротких фрагментов текста.', price:200, details:{includes:'Замена до 3 коротких фрагментов: заголовка, описания, цены или подписи.', required:'Старый текст, новый текст и ссылка либо скриншот места на странице.', note:'Переписывание большой статьи, перевод или создание текста с нуля не входят.'}},
+        {id:'photo', title:'Замена фотографии', description:'Одна подготовленная фотография.', price:200, details:{includes:'Замена одного изображения с подгонкой под существующий блок сайта.', required:'Готовое фото хорошего качества и ссылка или скриншот места замены.', note:'Профессиональная ретушь, покупка лицензии и создание изображений не входят.'}},
+        {id:'link', title:'Изменение ссылки или контакта', description:'Одна ссылка, кнопка или контакт.', price:150, details:{includes:'Замена одной ссылки, номера телефона, почты, кнопки связи или ссылки на соцсеть.', required:'Новый адрес или контакт и место, где он должен появиться.', note:'Минимальная стоимость одного заказа на доработки — 300 ₽.'}},
+        {id:'small-pack', title:'Пакет мелких изменений', description:'До 5 правок текста, фото или ссылок.', price:500, details:{includes:'До 5 небольших замен текста, фотографий, ссылок или контактов в одном сообщении.', required:'Единый список правок с понятным указанием, что и где меняется.', note:'Не включает перестройку блоков и изменение общего дизайна.'}},
+        {id:'restyle', title:'Изменение оформления', description:'Цвета, шрифты или отступы одного экрана.', price:700, details:{includes:'Корректировка оформления одного экрана: цвет, шрифт, отступы или размер несложного элемента.', required:'Ссылка/скриншот текущего экрана и точное описание желаемого результата.', note:'Полная смена визуального стиля сайта считается как рестайлинг от 2 000 ₽.'}},
+        {id:'new-block', title:'Новый блок', description:'Один простой блок в существующем стиле.', price:800, details:{includes:'Один новый простой блок в текущем стиле сайта: отзывы, прайс, вопросы или контакты.', required:'Готовый текст, материалы и пример того, как блок должен работать.', note:'Если нужен уникальный дизайн или сложная логика, стоимость начинается от 1 200 ₽.'}},
+        {id:'fix', title:'Исправление проблемы', description:'Одна небольшая ошибка после оценки.', price:500, details:{includes:'Исправление одной проблемы с отображением, адаптацией или кнопкой после просмотра исходников.', required:'Ссылка, описание проблемы и скриншот/видео, если ошибка видна не всегда.', note:'Ошибки, допущенные мной при разработке, исправляю бесплатно в течение 14 дней после запуска.'}},
+        {id:'instruction', title:'Инструкция по обновлению', description:'Памятка для самостоятельных изменений.', price:500, details:{includes:'Пошаговая памятка по самостоятельной замене контента в конкретном сайте.', required:'Доступ к исходным файлам и список элементов, которые вы хотите менять сами.', note:'Подходит для статичных сайтов без админ-панели.'}},
+        {id:'maintenance', title:'Поддержка на 30 дней', description:'До 3 небольших обновлений за месяц.', price:2000, details:{includes:'До 3 небольших обновлений текста, фотографий, ссылок или контактов в течение 30 дней.', required:'Присылайте каждую задачу одним понятным сообщением с готовыми материалами.', note:'Новые блоки, редизайн и сложные функции считаются отдельно.'}}
       ]
     }
   }
@@ -55,6 +74,7 @@ const SITE_CONFIG = {
   const $ = selector => document.querySelector(selector);
   const $$ = selector => [...document.querySelectorAll(selector)];
   const money = value => new Intl.NumberFormat('ru-RU', {maximumFractionDigits:0}).format(value) + ' ₽';
+  const fromPrice = project => project.fromPrice ?? project.price;
   const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const state = {project:'site', selections:{site:new Set(), design:new Set(), support:new Set()}};
   let toastTimer;
@@ -63,15 +83,20 @@ const SITE_CONFIG = {
   function getEstimate() {
     const project = SITE_CONFIG.projects[state.project];
     const extras = project.extras.filter(item => state.selections[state.project].has(item.id));
-    return {project, extras, total:project.price + extras.reduce((sum,item) => sum + item.price, 0)};
+    const rawTotal = project.price + extras.reduce((sum,item) => sum + item.price, 0);
+    const minimumFee = extras.length && project.minimum ? Math.max(project.minimum - rawTotal, 0) : 0;
+    return {project, extras, minimumFee, total:rawTotal + minimumFee};
   }
 
   function estimateText() {
-    const {project, extras, total} = getEstimate();
-    return ['Привет! Хочу обсудить проект с ' + SITE_CONFIG.brand + '.', '',
-      'Задача: ' + project.name, project.baseLabel + ': ' + money(project.price),
-      ...extras.map(item => '+ ' + item.title + ': ' + money(item.price)), '',
-      'Примерная стоимость: ' + money(total),
+    const {project, extras, minimumFee, total} = getEstimate();
+    const lines = ['Привет! Хочу обсудить проект с ' + SITE_CONFIG.brand + '.', '', 'Задача: ' + project.name];
+    if (project.price) lines.push(project.baseLabel + ': ' + money(project.price));
+    lines.push(...extras.map(item => '+ ' + item.title + ': ' + money(item.price)));
+    if (minimumFee) lines.push('+ Минимальная стоимость заказа: ' + money(minimumFee));
+    if (!project.price && !extras.length) lines.push('Нужно выбрать услугу в калькуляторе.');
+    return [...lines,
+      '', 'Примерная стоимость: ' + (total ? money(total) : 'уточняется'),
       'Точная цена — после обсуждения объёма и сложности.', '',
       'О моей задаче:'].join('\n');
   }
@@ -91,17 +116,21 @@ const SITE_CONFIG = {
   }
 
   function renderEstimate() {
-    const {project, extras, total} = getEstimate();
+    const {project, extras, minimumFee, total} = getEstimate();
     $('#estimate-name').textContent = project.name;
-    $('#estimate-total').textContent = money(total);
-    $('#mobile-estimate-total').textContent = money(total);
-    const lines = [{title:project.baseLabel, price:project.price}, ...extras];
+    const totalText = total ? money(total) : 'Выберите услугу';
+    $('#estimate-total').textContent = totalText;
+    $('#estimate-total').classList.toggle('empty-total', !total);
+    $('#mobile-estimate-total').textContent = total ? money(total) : '—';
+    const lines = [...(project.price ? [{title:project.baseLabel, price:project.price}] : []), ...extras];
+    if (minimumFee) lines.push({title:'Минимальная стоимость заказа', price:minimumFee});
+    if (!lines.length) lines.push({title:'Выберите нужную услугу', price:null});
     $('#estimate-lines').replaceChildren(...lines.map(item => {
       const row = document.createElement('div');
       const title = document.createElement('span');
       const price = document.createElement('span');
       title.textContent = item.title;
-      price.textContent = money(item.price);
+      price.textContent = item.price === null ? '—' : money(item.price);
       row.append(title, price);
       return row;
     }));
@@ -113,12 +142,34 @@ const SITE_CONFIG = {
     $('#estimate-text').value = estimateText();
   }
 
+  function fillDetails(container, details) {
+    container.replaceChildren(...[
+      ['Входит:', details.includes],
+      ['От заказчика:', details.required],
+      ['Важно:', details.note]
+    ].map(([label, text]) => {
+      const paragraph = document.createElement('p');
+      const strong = document.createElement('strong');
+      strong.textContent = label + ' ';
+      paragraph.append(strong, text);
+      return paragraph;
+    }));
+  }
+
   function renderExtras() {
     const project = SITE_CONFIG.projects[state.project];
     $('#base-description').textContent = project.description;
+    $('#extras-legend').replaceChildren(Object.assign(document.createElement('span'), {className:'step-badge', textContent:'2'}), ' ' + project.extrasLegend);
+    const baseDetails = $('#base-details');
+    const baseMore = $('#base-more');
+    baseDetails.hidden = true;
+    baseMore.setAttribute('aria-expanded', 'false');
+    fillDetails(baseDetails, project.details);
     $('#extras-list').replaceChildren(...project.extras.map(item => {
+      const option = document.createElement('div');
+      option.className = 'extra-option';
       const label = document.createElement('label');
-      label.className = 'extra-option';
+      label.className = 'extra-selector';
       const input = document.createElement('input');
       input.type = 'checkbox'; input.value = item.id;
       input.checked = state.selections[state.project].has(item.id);
@@ -126,17 +177,45 @@ const SITE_CONFIG = {
       const title = document.createElement('span'); title.className = 'extra-title'; title.textContent = item.title;
       const description = document.createElement('span'); description.className = 'extra-description'; description.textContent = item.description;
       const price = document.createElement('span'); price.className = 'extra-price'; price.textContent = '+ ' + money(item.price);
-      info.append(title, description); label.append(input, info, price);
+      const actions = document.createElement('span'); actions.className = 'extra-actions';
+      const more = document.createElement('button');
+      more.className = 'more-button'; more.type = 'button'; more.textContent = 'Подробнее ';
+      const arrow = document.createElement('span'); arrow.setAttribute('aria-hidden', 'true'); arrow.textContent = '↓';
+      more.append(arrow);
+      const detail = document.createElement('div'); detail.className = 'service-details'; detail.hidden = true;
+      const detailId = 'detail-' + state.project + '-' + item.id;
+      detail.id = detailId; more.setAttribute('aria-controls', detailId); more.setAttribute('aria-expanded', 'false');
+      fillDetails(detail, item.details);
+      more.addEventListener('click', () => {
+        const expanded = more.getAttribute('aria-expanded') === 'true';
+        more.setAttribute('aria-expanded', String(!expanded));
+        detail.hidden = expanded;
+      });
+      info.append(title, description); label.append(input, info); actions.append(price, more); option.append(label, actions, detail);
       input.addEventListener('change', () => {
         const selected = state.selections[state.project];
         input.checked ? selected.add(item.id) : selected.delete(item.id);
+        if (state.project === 'support') {
+          const singleEdits = ['text', 'photo', 'link'];
+          if (item.id === 'small-pack' && input.checked) singleEdits.forEach(id => selected.delete(id));
+          if (singleEdits.includes(item.id) && input.checked) selected.delete('small-pack');
+          renderExtras();
+          return;
+        }
         renderEstimate();
       });
-      return label;
+      return option;
     }));
     $$('input[name="project"]').forEach(input => {input.checked = input.value === state.project;});
     renderEstimate();
   }
+
+  $('#base-more').addEventListener('click', () => {
+    const button = $('#base-more');
+    const expanded = button.getAttribute('aria-expanded') === 'true';
+    button.setAttribute('aria-expanded', String(!expanded));
+    $('#base-details').hidden = expanded;
+  });
 
   function setProject(key) {
     if (!Object.hasOwn(SITE_CONFIG.projects, key)) return;
@@ -148,10 +227,10 @@ const SITE_CONFIG = {
   $$('[data-owner]').forEach(element => {element.textContent = SITE_CONFIG.brand;});
   document.title = SITE_CONFIG.brand + ' — сайты и дизайн';
   $('#year').textContent = new Date().getFullYear();
-  $$('[data-service-price]').forEach(element => {element.textContent = money(SITE_CONFIG.projects[element.dataset.servicePrice].price);});
+  $$('[data-service-price]').forEach(element => {element.textContent = money(fromPrice(SITE_CONFIG.projects[element.dataset.servicePrice]));});
   $$('input[name="project"]').forEach(input => {
     const project = SITE_CONFIG.projects[input.value];
-    input.nextElementSibling.lastElementChild.textContent = 'от ' + money(project.price);
+    input.nextElementSibling.lastElementChild.textContent = 'от ' + money(fromPrice(project));
     input.addEventListener('change', () => setProject(input.value));
   });
   $$('[data-preset]').forEach(link => link.addEventListener('click', () => setProject(link.dataset.preset)));
