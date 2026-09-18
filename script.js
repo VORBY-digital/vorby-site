@@ -2,11 +2,11 @@
  * VORBY — чистый JavaScript, без библиотек, сервера и базы данных.
  * Стартовый прайс для небольших проектов. Обоснование — в PRICING.md.
  * В telegramUsername укажите свой username без @ (например, 'vorby_design').
- * Оставьте пустую строку, пока контакт не готов: чужая ссылка не появится.
+ * Для номера телефона измените ссылку tel: в контактном блоке index.html.
  */
 const SITE_CONFIG = {
   brand: 'VORBY',
-  telegramUsername: '',
+  telegramUsername: 'A_Lioznov',
   projects: {
     site: {
       name: 'Сайт-визитка', label: 'Сайт', baseLabel: 'Создание сайта', price: 6000,
@@ -291,7 +291,7 @@ const SITE_CONFIG = {
   if (contactURL) {
     $('#telegram-link').href = contactURL;
     $('#telegram-link').target = '_blank'; $('#telegram-link').rel = 'noopener noreferrer';
-    $('#contact-note').textContent = '@' + SITE_CONFIG.telegramUsername.trim().replace(/^@/, '');
+    $('#contact-note').textContent = 'Telegram: @' + SITE_CONFIG.telegramUsername.trim().replace(/^@/, '');
   } else {
     $('#telegram-link').addEventListener('click', event => {
       event.preventDefault();

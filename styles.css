@@ -77,3 +77,6 @@ html[data-theme="light"] .nav a{color:#4e5974}html[data-theme="light"] .nav a:ho
 @keyframes theme-wipe{0%{opacity:.88;transform:scale(.08)}52%{opacity:.42;transform:scale(26)}100%{opacity:0;transform:scale(34)}}
 @media(max-width:800px){.header-actions{margin-left:auto;gap:8px}.theme-toggle-label{display:none}.theme-toggle{padding:7px 3px}.theme-wipe{right:66px;top:13px}.nav{background:var(--bg)!important}}
 @media(max-width:520px){.theme-toggle-track{width:50px}.theme-toggle-orb{width:22px;height:22px}.theme-symbol{font-size:18px}html[data-theme="light"] .theme-toggle-orb{transform:translateX(24px) rotate(18deg)}}
+
+/* Дополнительный способ связи в финальном блоке. */
+.contact-phone{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-top:10px;padding:10px 2px;border-bottom:1px solid #3c4a2c75;color:#3c4a2c;font:600 14px/1.4 Arial,Helvetica,sans-serif;transition:color .2s,transform .2s,border-color .2s}.contact-phone>span{font-size:21px;line-height:1;color:var(--dark)}.contact-phone:hover{color:var(--dark);border-color:var(--dark);transform:translateX(3px)}html[data-theme="light"] .contact-phone{color:#fff;border-color:#ffffff59}html[data-theme="light"] .contact-phone>span{color:#ffd171}html[data-theme="light"] .contact-phone:hover{color:#ffd171;border-color:#ffd171}html[data-theme="light"] .contact-action>p{color:#e8ebff}
