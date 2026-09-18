@@ -80,6 +80,16 @@ const SITE_CONFIG = {
   let toastTimer;
   let themeTimer;
 
+  // При входе всегда начинаем с первого экрана, даже если браузер запомнил
+  // старую позицию или в адресе остался якорь другого раздела.
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  function resetEntryScroll() {
+    if (window.location.hash) history.replaceState(null, document.title, window.location.pathname + window.location.search);
+    window.scrollTo(0, 0);
+  }
+  resetEntryScroll();
+  window.addEventListener('pageshow', resetEntryScroll, {once:true});
+
   // Тема сохраняется только в браузере посетителя: сервер и аккаунты не нужны.
   const themeToggle = $('#theme-toggle');
   const themeLabel = $('#theme-toggle-label');
@@ -94,6 +104,7 @@ const SITE_CONFIG = {
     themeLabel.textContent = isLight ? 'Светлая' : 'Тёмная';
     themeMeta.setAttribute('content', isLight ? '#f6f4ee' : '#111211');
     try {localStorage.setItem('vorby-theme', isLight ? 'light' : 'dark');} catch {}
+    window.dispatchEvent(new CustomEvent('vorby-theme-change', {detail:{theme:isLight ? 'light' : 'dark'}}));
     if (!animate || motion.matches) return;
     root.classList.remove('theme-switching');
     void root.offsetWidth;

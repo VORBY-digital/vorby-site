@@ -61,8 +61,12 @@
   // Треугольники с нормалями и цветом: position(3), normal(3), color(3).
   function makeCubieMesh(home) {
     const vertices=[];
-    const half=.472, inner=.415, plastic=[.042,.048,.039];
-    const colors=[[.98,.30,.23],[1,.58,.16],[.93,.96,.91],[1,.84,.20],[.66,.90,.30],[.22,.46,.94]];
+    const lightTheme=typeof document!=='undefined'&&document.documentElement.dataset.theme==='light';
+    const half=.472, inner=.415;
+    const plastic=lightTheme?[.78,.80,.84]:[.042,.048,.039];
+    const colors=lightTheme
+      ? [[.88,.20,.25],[.94,.48,.12],[.99,.99,.96],[.93,.69,.08],[.24,.62,.43],[.24,.38,.83]]
+      : [[.98,.30,.23],[1,.58,.16],[.93,.96,.91],[1,.84,.20],[.66,.90,.30],[.22,.46,.94]];
     function polygon(points,color,explicitNormal) {
       const a=points[0], b=points[1], c=points[2];
       const u=b.map((v,i)=>v-a[i]), v=c.map((n,i)=>n-a[i]);
@@ -126,7 +130,7 @@
     const fallback=gl?null:canvas.getContext('2d');
     if (!gl&&!fallback) {status.textContent='ИЗ ДЕТАЛЕЙ — В ЦЕЛОЕ';return;}
     let program, locations;
-    const meshes=cube.cubies.map(cubie=>({cubie,data:makeCubieMesh(cubie.home),buffer:null}));
+    let meshes=cube.cubies.map(cubie=>({cubie,data:makeCubieMesh(cubie.home),buffer:null}));
     function shader(type,source) {
       const handle=gl.createShader(type); gl.shaderSource(handle,source); gl.compileShader(handle);
       if (!gl.getShaderParameter(handle,gl.COMPILE_STATUS)) {gl.deleteShader(handle);throw new Error('Cube shader compilation failed');}
@@ -174,6 +178,19 @@
       gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);
       // Отсечение граней не нужно: накладки и фаски имеют явные нормали.
       gl.clearColor(0,0,0,0);
+    }
+    function refreshTheme() {
+      const previous=meshes;
+      meshes=cube.cubies.map(cubie=>({cubie,data:makeCubieMesh(cubie.home),buffer:null}));
+      if (gl&&locations) {
+        previous.forEach(mesh=>gl.deleteBuffer(mesh.buffer));
+        for (const mesh of meshes) {
+          mesh.buffer=gl.createBuffer();
+          gl.bindBuffer(gl.ARRAY_BUFFER,mesh.buffer);
+          gl.bufferData(gl.ARRAY_BUFFER,mesh.data,gl.STATIC_DRAW);
+        }
+      }
+      draw();
     }
     if (gl) {
       try {setupGL();}
@@ -310,6 +327,7 @@
     if ('IntersectionObserver' in window) new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;sync();}).observe(visual);
     document.addEventListener('visibilitychange',sync);
     motion.addEventListener('change',()=>{resetSequence();sync();});
+    window.addEventListener('vorby-theme-change',refreshTheme);
     if (scrollDriven) window.addEventListener('scroll',syncScrollCube,{passive:true});
     canvas.addEventListener('webglcontextlost',event=>{event.preventDefault();lost=true;sync();});
     canvas.addEventListener('webglcontextrestored',()=>{lost=false;setupGL();resize();sync();});
