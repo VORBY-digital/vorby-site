@@ -78,6 +78,33 @@ const SITE_CONFIG = {
   const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const state = {project:'site', selections:{site:new Set(), design:new Set(), support:new Set()}};
   let toastTimer;
+  let themeTimer;
+
+  // Тема сохраняется только в браузере посетителя: сервер и аккаунты не нужны.
+  const themeToggle = $('#theme-toggle');
+  const themeLabel = $('#theme-toggle-label');
+  const themeMeta = $('#theme-color');
+  function applyTheme(theme, animate = false) {
+    const root = document.documentElement;
+    const isLight = theme === 'light';
+    root.dataset.theme = isLight ? 'light' : 'dark';
+    themeToggle.setAttribute('aria-pressed', String(isLight));
+    themeToggle.setAttribute('aria-label', isLight ? 'Включить тёмную тему' : 'Включить светлую тему');
+    themeToggle.title = isLight ? 'Включить тёмную тему' : 'Включить светлую тему';
+    themeLabel.textContent = isLight ? 'Светлая' : 'Тёмная';
+    themeMeta.setAttribute('content', isLight ? '#f6f4ee' : '#111211');
+    try {localStorage.setItem('vorby-theme', isLight ? 'light' : 'dark');} catch {}
+    if (!animate || motion.matches) return;
+    root.classList.remove('theme-switching');
+    void root.offsetWidth;
+    root.classList.add('theme-switching');
+    clearTimeout(themeTimer);
+    themeTimer = setTimeout(() => root.classList.remove('theme-switching'), 700);
+  }
+  applyTheme(document.documentElement.dataset.theme === 'light' ? 'light' : 'dark');
+  themeToggle.addEventListener('click', () => {
+    applyTheme(document.documentElement.dataset.theme === 'light' ? 'dark' : 'light', true);
+  });
 
   // Все суммы берутся из одного объекта конфигурации.
   function getEstimate() {

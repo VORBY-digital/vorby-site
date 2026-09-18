@@ -3,14 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#111211">
+  <meta name="theme-color" id="theme-color" content="#111211">
   <title>VORBY — сайты и дизайн</title>
+  <script>try{if(localStorage.getItem('vorby-theme')==='light'){document.documentElement.dataset.theme='light';document.querySelector('#theme-color').setAttribute('content','#f6f4ee');}}catch{}</script>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23111211'/%3E%3Cpath d='M12 17h11l9 25 9-25h11L37 49H27Z' fill='%23c7f36b'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="styles.css?v=services-20260918">
-  <script src="script.js?v=services-20260918" defer></script>
+  <link rel="stylesheet" href="styles.css?v=theme-20260918">
+  <script src="script.js?v=theme-20260918" defer></script>
   <script src="rubik.js" defer></script>
 </head>
 <body>
+  <div class="theme-wipe" aria-hidden="true"></div>
   <a class="skip-link" href="#main">Перейти к содержимому</a>
   <div class="page-progress" aria-hidden="true"></div>
   <header class="header">
@@ -19,8 +21,14 @@
       <nav class="nav" id="navigation" aria-label="Главное меню">
         <a href="#services">Услуги</a><a href="#work">Примеры</a><a href="#calculator">Стоимость</a><a href="#process">Как работаем</a>
       </nav>
-      <a class="header-contact" href="#contact">Обсудим проект <span aria-hidden="true">↗</span></a>
-      <button class="menu-button" type="button" aria-expanded="false" aria-controls="navigation" aria-label="Открыть меню"><span></span><span></span></button>
+      <div class="header-actions">
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-pressed="false" aria-label="Включить светлую тему">
+          <span class="theme-toggle-track" aria-hidden="true"><span class="theme-toggle-orb"><span class="theme-symbol theme-symbol-moon">☾</span><span class="theme-symbol theme-symbol-sun">☼</span></span><i></i><i></i><i></i></span>
+          <span class="theme-toggle-label" id="theme-toggle-label" aria-hidden="true">Тёмная</span>
+        </button>
+        <a class="header-contact" href="#contact">Обсудим проект <span aria-hidden="true">↗</span></a>
+        <button class="menu-button" type="button" aria-expanded="false" aria-controls="navigation" aria-label="Открыть меню"><span></span><span></span></button>
+      </div>
     </div>
   </header>
 
