@@ -92,7 +92,7 @@ h1 { font-size: clamp(64px, 6.8vw, 98px); line-height: 1.02; font-weight: 650; l
 html[data-theme="light"] .cube-orbits { opacity: .32; }
 .cube-glow, html[data-theme="light"] .cube-glow { inset: 24% 15%; background: radial-gradient(ellipse, rgba(var(--accent-rgb), .24), transparent 65%); filter: blur(22px); transform: scale(calc(1 + var(--hero-progress, 0) * .16)); }
 .cube-shadow, html[data-theme="light"] .cube-shadow { background: rgba(var(--blue-rgb), .21); width: 50%; left: 25%; bottom: 24%; filter: blur(22px); }
-.cube-caption { bottom: 13%; font-size: 9px; letter-spacing: .17em; }
+.cube-caption { bottom: 13%; left: 50%; right: auto; width: max-content; max-width: calc(100% - 32px); transform: translateX(-50%); padding: 7px 11px; border: 1px solid var(--line); border-radius: 9px; background: var(--glass); backdrop-filter: blur(12px); font-size: 9px; letter-spacing: .17em; white-space: nowrap; }
 .cube-caption-line { background: var(--lime); width: 18px; }
 .floating-tag, html[data-theme="light"] .floating-tag { z-index: 3; background: var(--glass); border: 1px solid var(--line); box-shadow: 0 8px 24px #00000010; color: var(--text); backdrop-filter: blur(16px); font-size: 10px; border-radius: 9px; padding: 9px 12px; animation-duration: 7s; }
 .hero-visual .tag-one { top: 23%; left: 6%; transform: rotate(-7deg); }
