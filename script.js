@@ -102,7 +102,7 @@ const SITE_CONFIG = {
     themeToggle.setAttribute('aria-label', isLight ? 'Включить тёмную тему' : 'Включить светлую тему');
     themeToggle.title = isLight ? 'Включить тёмную тему' : 'Включить светлую тему';
     themeLabel.textContent = isLight ? 'Светлая' : 'Тёмная';
-    themeMeta.setAttribute('content', isLight ? '#f7fafc' : '#080e12');
+    themeMeta.setAttribute('content', isLight ? '#faf3e8' : '#101117');
     try {localStorage.setItem('vorby-theme', isLight ? 'light' : 'dark');} catch {}
     window.dispatchEvent(new CustomEvent('vorby-theme-change', {detail:{theme:isLight ? 'light' : 'dark'}}));
     if (!animate || motion.matches) return;

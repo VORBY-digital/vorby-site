@@ -3,17 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" id="theme-color" content="#111211">
+  <meta name="theme-color" id="theme-color" content="#101117">
   <title>VORBY — сайты и дизайн</title>
-  <script>try{if(localStorage.getItem('vorby-theme')==='light'){document.documentElement.dataset.theme='light';document.querySelector('#theme-color').setAttribute('content','#f6f4ee');}}catch{}</script>
+  <script>try{if(localStorage.getItem('vorby-theme')==='light'){document.documentElement.dataset.theme='light';document.querySelector('#theme-color').setAttribute('content','#faf3e8');}}catch{}</script>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23111211'/%3E%3Cpath d='M12 17h11l9 25 9-25h11L37 49H27Z' fill='%23c7f36b'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="styles.css?v=20260930">
-  <link rel="stylesheet" href="design.css?v=20260930">
-  <script src="script.js?v=20260930" defer></script>
-  <script src="rubik.js?v=20260930" defer></script>
-  <script src="motion.js?v=20260930" defer></script>
+  <link rel="stylesheet" href="styles.css?v=depth-20260930">
+  <link rel="stylesheet" href="design.css?v=depth-20260930">
+  <link rel="stylesheet" href="cinema.css?v=depth-20260930">
+  <script src="script.js?v=depth-20260930" defer></script>
+  <script src="rubik.js?v=depth-20260930" defer></script>
+  <script src="motion.js?v=depth-20260930" defer></script>
+  <script src="cinema.js?v=depth-20260930" defer></script>
 </head>
 <body>
+  <div class="parallax-world" aria-hidden="true">
+    <div class="depth-layer depth-far" data-depth="0.12"><div class="depth-sun"></div><div class="depth-aura"></div><div class="depth-grid"></div></div>
+    <div class="depth-layer depth-middle" data-depth="0.32">
+      <svg class="depth-ribbons" viewBox="0 0 1600 1000" fill="none" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="ribbon-metal" x1="0" y1="0" x2="1600" y2="1000" gradientUnits="userSpaceOnUse"><stop class="metal-stop-a"/><stop offset=".28" class="metal-stop-b"/><stop offset=".48" class="metal-stop-c"/><stop offset=".62" class="metal-stop-a"/><stop offset="1" class="metal-stop-b"/></linearGradient></defs><g stroke="url(#ribbon-metal)"><path d="M1780 110C970-380 920 620 1570 430S370-140-140 350" stroke-width="3"/><path d="M1750 148C1000-330 965 600 1550 470S355-105-110 386" stroke-width="1" opacity=".45"/><path d="M-320 780C370 110 690 1280 1680 790" stroke-width="2"/><path d="M-280 830C420 170 740 1340 1700 850" stroke-width="1" opacity=".4"/></g></svg>
+      <div class="depth-torus torus-one"></div><div class="depth-torus torus-two"></div><div class="depth-orb orb-one"></div><div class="depth-orb orb-two"></div>
+    </div>
+    <div class="depth-layer depth-near" data-depth="0.65"><div class="depth-fragments"></div><div class="depth-grain"></div><div class="depth-vignette"></div></div>
+    <canvas class="scene-dust"></canvas>
+  </div>
+  <div class="cube-space" aria-hidden="true"><div class="cube-voyager"><canvas id="rubik-canvas" data-scroll-cube="hero" data-cinematic="true"></canvas><div class="voyager-halo"></div></div></div>
   <div class="ambient-scene" aria-hidden="true"><div class="ambient-orb ambient-orb-one"></div><div class="ambient-orb ambient-orb-two"></div><div class="ambient-grid"></div></div>
   <div class="theme-wipe" aria-hidden="true"></div>
   <a class="skip-link" href="#main">Перейти к содержимому</a>
@@ -36,7 +48,8 @@
   </header>
 
   <main id="main">
-    <section class="hero container" id="home">
+    <section class="hero container cinema-hero" id="home">
+      <div class="hero-sticky">
       <div class="hero-top"><span class="eyebrow">НЕБОЛЬШОЙ САЙТ. БОЛЬШОЕ ПЕРВОЕ ВПЕЧАТЛЕНИЕ.</span><span class="hero-index" aria-hidden="true">WEB & DESIGN / 01</span></div>
       <div class="hero-layout">
         <div class="hero-content">
@@ -54,13 +67,14 @@
           </div>
           <div class="visual-topline"><span>ИЗ ДЕТАЛЕЙ — В ЦЕЛОЕ</span><span>[ CREATE ]</span></div>
           <div class="cube-glow"></div><div class="cube-shadow"></div>
-          <canvas id="rubik-canvas" data-scroll-cube="hero"></canvas>
+          <span class="lens-ring lens-ring-one"></span><span class="lens-ring lens-ring-two"></span><span class="assembly-flash"></span><span class="scan-plane"></span>
           <div class="cube-caption"><span class="cube-caption-line"></span><span id="cube-status">СОБИРАЕМ ПО ДЕТАЛЯМ</span></div>
           <div class="floating-tag tag-one">&lt;ваш новый сайт /&gt;</div><div class="floating-tag tag-two">идея → дизайн → запуск</div>
           <div class="visual-bottomline"><span>DESIGNED TO BE YOU</span><span>001 — ∞</span></div>
         </div>
       </div>
       <div class="hero-bottom"><span>От первого наброска до работающей ссылки.</span><a href="#services" aria-label="Перейти к услугам">Листайте дальше <span aria-hidden="true">↓</span></a></div>
+      </div>
     </section>
 
     <div class="marquee" aria-hidden="true"><div class="marquee-track"><span>САЙТЫ-ВИЗИТКИ <i>✳</i> ЛЕНДИНГИ <i>✳</i> ДИЗАЙН <i>✳</i> ПОРТФОЛИО <i>✳</i> САЙТЫ-ВИЗИТКИ <i>✳</i> ЛЕНДИНГИ <i>✳</i> ДИЗАЙН <i>✳</i> ПОРТФОЛИО <i>✳</i></span><span>САЙТЫ-ВИЗИТКИ <i>✳</i> ЛЕНДИНГИ <i>✳</i> ДИЗАЙН <i>✳</i> ПОРТФОЛИО <i>✳</i> САЙТЫ-ВИЗИТКИ <i>✳</i> ЛЕНДИНГИ <i>✳</i> ДИЗАЙН <i>✳</i> ПОРТФОЛИО <i>✳</i></span></div></div>

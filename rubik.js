@@ -63,10 +63,10 @@
     const vertices=[];
     const lightTheme=typeof document!=='undefined'&&document.documentElement.dataset.theme==='light';
     const half=.472, inner=.415;
-    const plastic=lightTheme?[.81,.85,.90]:[.05,.08,.105];
+    const plastic=lightTheme?[.82,.75,.65]:[.065,.075,.09];
     const colors=lightTheme
-      ? [[.90,.31,.40],[.99,.62,.29],[.99,1,1],[.98,.79,.23],[.17,.68,.59],[.14,.34,.84]]
-      : [[.98,.41,.48],[1,.69,.32],[.93,.98,1],[.97,.86,.42],[.40,.96,.74],[.25,.55,1]];
+      ? [[.60,.18,.30],[.86,.51,.35],[.97,.94,.86],[.83,.67,.40],[.44,.52,.42],[.62,.43,.50]]
+      : [[.81,.92,.42],[.35,.76,.74],[.92,.91,.87],[.53,.56,.91],[.89,.60,.47],[.33,.47,.61]];
     function polygon(points,color,explicitNormal) {
       const a=points[0], b=points[1], c=points[2];
       const u=b.map((v,i)=>v-a[i]), v=c.map((n,i)=>n-a[i]);
@@ -119,6 +119,7 @@
     const canvas=document.getElementById(canvasId);
     if (!canvas) return;
     const navCube=canvasId==='rubik-nav-canvas';
+    const cinematic=canvas.dataset.cinematic==='true';
     scrollDriven=scrollDriven||canvas.dataset.scrollCube==='hero';
     const visual=canvas.closest('.hero-visual')||canvas.parentElement;
     const status=document.getElementById(navCube?'nav-cube-status':'cube-status')||{textContent:''};
@@ -158,16 +159,20 @@
       `);
       const fragment=shader(gl.FRAGMENT_SHADER,`
         precision mediump float;
+        uniform float u_lightTheme;
         varying mediump vec3 v_normal;
         varying mediump vec3 v_color;
         varying mediump vec3 v_world;
         void main() {
           vec3 normal=normalize(v_normal);
-          vec3 light=normalize(vec3(-0.5,0.85,0.9));
+          vec3 light=normalize(vec3(-0.45,0.8,0.72));
           vec3 view=normalize(vec3(0.0,0.0,10.0)-v_world);
           float diffuse=max(dot(normal,light),0.0);
-          float shine=pow(max(dot(normal,normalize(light+view)),0.0),48.0)*0.23;
-          vec3 color=v_color*(0.55+0.5*diffuse)+vec3(shine);
+          float shine=pow(max(dot(normal,normalize(light+view)),0.0),72.0)*0.43;
+          float rim=pow(1.0-max(dot(normal,view),0.0),3.0);
+          float fill=max(dot(normal,normalize(vec3(.8,.2,-.7))),0.0);
+          vec3 tint=mix(vec3(.57,.82,.8),vec3(.83,.68,.48),u_lightTheme);
+          vec3 color=v_color*(.46+.58*diffuse+.14*fill)+vec3(shine)+tint*rim*.12;
           gl_FragColor=vec4(color,1.0);
         }
       `);
@@ -175,7 +180,7 @@
       gl.deleteShader(vertex);gl.deleteShader(fragment);
       if (!gl.getProgramParameter(program,gl.LINK_STATUS)) throw new Error('Cube shader linking failed');
       gl.useProgram(program);
-      locations={position:gl.getAttribLocation(program,'a_position'),normal:gl.getAttribLocation(program,'a_normal'),color:gl.getAttribLocation(program,'a_color'),model:gl.getUniformLocation(program,'u_model'),projectionView:gl.getUniformLocation(program,'u_projectionView')};
+      locations={position:gl.getAttribLocation(program,'a_position'),normal:gl.getAttribLocation(program,'a_normal'),color:gl.getAttribLocation(program,'a_color'),model:gl.getUniformLocation(program,'u_model'),projectionView:gl.getUniformLocation(program,'u_projectionView'),lightTheme:gl.getUniformLocation(program,'u_lightTheme')};
       for (const mesh of meshes) {mesh.buffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,mesh.buffer);gl.bufferData(gl.ARRAY_BUFFER,mesh.data,gl.STATIC_DRAW);}
       gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);
       // Отсечение граней не нужно: накладки и фаски имеют явные нормали.
@@ -207,7 +212,7 @@
     let width=0,height=0,dpr=1,frame=0,lastTime=0,elapsed=0,visible=true,lost=false;
     let pointerX=0,pointerY=0,tiltX=0,tiltY=0;
     let queue=inverseMoves(SCRAMBLE), index=0, active=null, wait=900, phase='solve';
-    let scrollProgress=0, targetProgress=0, appliedProgress=-1;
+    let scrollProgress=0, targetProgress=0, appliedProgress=-1, pageProgress=0;
     if (!motion.matches) SCRAMBLE.forEach(move=>cube.turn(move));
     function resetSequence() {
       cube.reset();index=0;active=null;queue=inverseMoves(SCRAMBLE);phase='solve';wait=900;
@@ -218,10 +223,14 @@
 
     function readScrollTarget() {
       if (!scrollDriven) return;
+      pageProgress=Math.max(0,Math.min(1,window.scrollY/Math.max(1,document.documentElement.scrollHeight-window.innerHeight)));
       const hero=document.getElementById('home');
+      const stage=document.querySelector('.hero-visual');
       const available=navCube
         ? Math.max(1,document.documentElement.scrollHeight-window.innerHeight)
-        : Math.max(250,hero.offsetTop+hero.offsetHeight-window.innerHeight*.65);
+        : cinematic&&innerWidth<=900
+          ? Math.max(350,stage.getBoundingClientRect().top+scrollY+stage.clientHeight*.85-innerHeight*.4)
+          : Math.max(250,hero.offsetTop+hero.offsetHeight-window.innerHeight+(cinematic?50:window.innerHeight*.35));
       targetProgress=Math.max(0,Math.min(1,window.scrollY/available));
       if (motion.matches) {cube.reset();active=null;scrollProgress=0;draw();return;}
       if (!frame&&visible&&!document.hidden&&!lost) frame=requestAnimationFrame(tick);
@@ -230,7 +239,8 @@
       if (!scrollDriven||motion.matches) return;
       if (Math.abs(appliedProgress-scrollProgress)<.00001) return;
       appliedProgress=scrollProgress;
-      const raw=scrollProgress*queue.length;
+      const solve=cinematic?Math.max(0,Math.min(1,(scrollProgress-.26)/.66)):scrollProgress;
+      const raw=solve*queue.length;
       const completed=Math.min(queue.length,Math.floor(raw));
       cube.reset();
       SCRAMBLE.forEach(move=>cube.turn(move));
@@ -261,23 +271,28 @@
       active={move:queue[index],elapsed:0,duration:phase==='solve'?700:340};
     }
     function modelMatrices() {
-      const yaw=-.62+(motion.matches?0:scrollProgress*TAU*(navCube ? .65 : .5)+(navCube?0:elapsed*.00007))+tiltX*.18;
-      const pitch=.48+(motion.matches?0:Math.sin(elapsed*.00012)*.045)+tiltY*.12;
+      const yaw=-.62+(motion.matches?0:scrollProgress*TAU*(navCube ? .65 : .72)+(cinematic?pageProgress*TAU*.8:0)+(navCube?0:elapsed*.000035))+tiltX*.18;
+      const pitch=.48+(motion.matches?0:Math.sin(scrollProgress*Math.PI)*.3+Math.sin(elapsed*.00012)*.035)+tiltY*.12;
       const global=multiply(translation(0,.08+Math.sin(elapsed*.0007)*.055,0),multiply(rotation(0,pitch),rotation(1,yaw)));
       const p=active?Math.min(active.elapsed/active.duration,1):0;
       const ease=p*p*(3-2*p);
       const layer=active?rotation(active.move.axis,active.move.direction*Math.PI/2*ease):null;
       return meshes.map(mesh=>{
         const cubie=mesh.cubie;
-        const separation=!navCube&&!motion.matches?1+.1*(1-scrollProgress):1;
-        let local=multiply(translation(...cubie.position.map(value=>value*separation)),cubie.orientation);
+        const progress=Math.max(0,Math.min(1,scrollProgress/.5));
+        const explosion=cinematic&&!motion.matches?1-progress*progress*(3-2*progress):0;
+        const separation=!navCube&&!motion.matches?1+(cinematic?1.05*explosion:.1*(1-scrollProgress)):1;
+        const position=cubie.position.map((value,i)=>value*separation+(i===1?Math.sin(elapsed*.0004+cubie.home[0]*3+cubie.home[2])*explosion*.1:0));
+        let local=multiply(translation(...position),cubie.orientation);
+        if(explosion) local=multiply(local,multiply(rotation(0,explosion*cubie.home[2]*.28),rotation(2,explosion*cubie.home[0]*.22)));
         if (active&&cubie.position[active.move.axis]===active.move.layer) local=multiply(layer,local);
         return multiply(global,local);
       });
     }
     function drawFallback(models) {
       const triangles=[];
-      const scale=Math.min(width,height)*1.7;
+      const distance=navCube?10:(cinematic?10.7+(1-scrollProgress)*3.2:10);
+      const scale=Math.min(width,height)*(cinematic?1.54:1.7);
       meshes.forEach((mesh,index)=>{
         const data=mesh.data, matrix=models[index];
         for (let i=0;i<data.length;i+=27) {
@@ -290,7 +305,7 @@
       triangles.sort((a,b)=>a.depth-b.depth);
       fallback.setTransform(dpr,0,0,dpr,0,0);fallback.clearRect(0,0,width,height);
       for (const triangle of triangles) {
-        const points=triangle.points.map(p=>[width/2+p[0]*scale/(10-p[2]),height/2-p[1]*scale/(10-p[2])]);
+        const points=triangle.points.map(p=>[width/2+p[0]*scale/(distance-p[2]),height/2-p[1]*scale/(distance-p[2])]);
         fallback.beginPath();fallback.moveTo(...points[0]);fallback.lineTo(...points[1]);fallback.lineTo(...points[2]);fallback.closePath();
         fallback.fillStyle='rgb('+triangle.color.join(',')+')';fallback.fill();
         fallback.strokeStyle=fallback.fillStyle;fallback.lineWidth=.3;fallback.stroke();
@@ -301,9 +316,11 @@
       const models=modelMatrices();
       if (!gl) {drawFallback(models);return;}
       gl.viewport(0,0,canvas.width,canvas.height);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.useProgram(program);
+      gl.uniform1f(locations.lightTheme,document.documentElement.dataset.theme==='light'?1:0);
       // Размер кубика ограничен меньшей стороной блока, в том числе на телефоне.
       const aspect=width/height;
-      const distance=navCube?8.0:(aspect<1?9.8/aspect:9.8);
+      const baseDistance=cinematic?10.7+(1-scrollProgress)*3.2:9.8;
+      const distance=navCube?8.0:(aspect<1?baseDistance/aspect:baseDistance);
       gl.uniformMatrix4fv(locations.projectionView,false,multiply(perspective(Math.PI/5,aspect,.1,100),translation(0,0,-distance)));
       for (let i=0;i<meshes.length;i++) {
         gl.bindBuffer(gl.ARRAY_BUFFER,meshes[i].buffer);
@@ -323,7 +340,8 @@
     function tick(time) {
       frame=0;
       if (!visible||document.hidden||motion.matches||lost) {lastTime=0;return;}
-      const delta=lastTime?Math.min(50,time-lastTime):0;lastTime=time;elapsed+=delta;
+      if(!navCube&&lastTime&&time-lastTime<30){frame=requestAnimationFrame(tick);return;}
+      const delta=lastTime?Math.min(70,time-lastTime):0;lastTime=time;elapsed+=delta;
       tiltX+=(pointerX-tiltX)*.06;tiltY+=(pointerY-tiltY)*.06;
       if (scrollDriven) {
         scrollProgress+=(targetProgress-scrollProgress)*.16;
@@ -360,7 +378,7 @@
     window.addEventListener('pageshow',sync);
     resize();sync();
   }
-  if (document.readyState==='loading') document.addEventListener('DOMContentLoaded',startCube,{once:true});
+  if (document.readyState==='loading') document.addEventListener('DOMContentLoaded',()=>startCube(),{once:true});
   else startCube();
   if (document.readyState==='loading') document.addEventListener('DOMContentLoaded',()=>startCube('rubik-nav-canvas',true),{once:true});
   else startCube('rubik-nav-canvas',true);

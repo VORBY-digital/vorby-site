@@ -21,7 +21,7 @@
     raf = 0;
     const rect = hero.getBoundingClientRect();
     const progress = reduced.matches ? 0 : clamp(-rect.top / Math.max(1, rect.height * .8));
-    hero.style.setProperty('--hero-progress', progress.toFixed(4));
+    if (!document.querySelector('.cube-voyager')) hero.style.setProperty('--hero-progress', progress.toFixed(4));
     if (process) {
       const box = process.getBoundingClientRect();
       process.style.setProperty('--process-progress', reduced.matches ? '1' : clamp((innerHeight * .9 - box.top) / (innerHeight * .6)).toFixed(4));
