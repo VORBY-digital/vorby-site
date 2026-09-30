@@ -7,11 +7,14 @@
   <title>VORBY — сайты и дизайн</title>
   <script>try{if(localStorage.getItem('vorby-theme')==='light'){document.documentElement.dataset.theme='light';document.querySelector('#theme-color').setAttribute('content','#f6f4ee');}}catch{}</script>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23111211'/%3E%3Cpath d='M12 17h11l9 25 9-25h11L37 49H27Z' fill='%23c7f36b'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="styles.css?v=theme-20260918">
-  <script src="script.js?v=entry-scroll-20260918" defer></script>
-  <script src="rubik.js?v=cube-theme-20260918" defer></script>
+  <link rel="stylesheet" href="styles.css?v=20260930">
+  <link rel="stylesheet" href="design.css?v=20260930">
+  <script src="script.js?v=20260930" defer></script>
+  <script src="rubik.js?v=20260930" defer></script>
+  <script src="motion.js?v=20260930" defer></script>
 </head>
 <body>
+  <div class="ambient-scene" aria-hidden="true"><div class="ambient-orb ambient-orb-one"></div><div class="ambient-orb ambient-orb-two"></div><div class="ambient-grid"></div></div>
   <div class="theme-wipe" aria-hidden="true"></div>
   <a class="skip-link" href="#main">Перейти к содержимому</a>
   <div class="page-progress" aria-hidden="true"></div>
@@ -45,9 +48,13 @@
         </div>
         <div class="hero-visual" aria-hidden="true">
           <div class="visual-grid"></div>
+          <div class="cube-atmosphere" aria-hidden="true">
+            <svg class="cube-orbits" viewBox="0 0 600 640" fill="none"><defs><linearGradient id="orbit-gradient" x1="80" y1="100" x2="500" y2="580" gradientUnits="userSpaceOnUse"><stop stop-color="#65f7c0"/><stop offset=".5" stop-color="#6ba5ff"/><stop offset="1" stop-color="#65f7c0" stop-opacity="0"/></linearGradient></defs><g stroke="url(#orbit-gradient)"><ellipse cx="300" cy="320" rx="252" ry="94" transform="rotate(-32 300 320)"/><ellipse cx="300" cy="320" rx="220" ry="124" transform="rotate(52 300 320)" stroke-dasharray="2 9"/><circle cx="300" cy="320" r="204" stroke-opacity=".18"/><path d="M300 48v28M300 564v28M36 320h28M536 320h28" stroke-opacity=".6"/></g><circle cx="90" cy="453" r="4" fill="#65f7c0"/><circle cx="492" cy="165" r="3" fill="#81b8ff"/></svg>
+            <span class="scene-particle particle-one"></span><span class="scene-particle particle-two"></span><span class="scene-particle particle-three"></span>
+          </div>
           <div class="visual-topline"><span>ИЗ ДЕТАЛЕЙ — В ЦЕЛОЕ</span><span>[ CREATE ]</span></div>
           <div class="cube-glow"></div><div class="cube-shadow"></div>
-          <canvas id="rubik-canvas"></canvas>
+          <canvas id="rubik-canvas" data-scroll-cube="hero"></canvas>
           <div class="cube-caption"><span class="cube-caption-line"></span><span id="cube-status">СОБИРАЕМ ПО ДЕТАЛЯМ</span></div>
           <div class="floating-tag tag-one">&lt;ваш новый сайт /&gt;</div><div class="floating-tag tag-two">идея → дизайн → запуск</div>
           <div class="visual-bottomline"><span>DESIGNED TO BE YOU</span><span>001 — ∞</span></div>
@@ -70,6 +77,24 @@
 
     <section class="section container" id="work">
       <div class="section-heading reveal"><div><p class="eyebrow">02 / КАК ЭТО МОЖЕТ ВЫГЛЯДЕТЬ</p><h2>Разные задачи.<br><span class="muted">Один подход: аккуратно.</span></h2></div><p class="section-description">Демонстрационные концепты.</p></div>
+      <article class="featured-project reveal" id="lidia-project">
+        <div class="featured-info">
+          <span class="project-type"><span class="project-live-dot" aria-hidden="true"></span> ОПУБЛИКОВАННЫЙ САЙТ</span>
+          <h3>Лидия<br> <span>Лиознова</span></h3>
+          <p>Сайт косметолога-эстетиста</p>
+          <div class="project-tags"><span>Сайт-визитка</span><span>Мобильная версия</span><span>Прайс-лист</span></div>
+          <a class="button button-lime" href="https://lioznov.github.io/cosmetology.LidiaKim/" target="_blank" rel="noopener noreferrer">Открыть сайт <span aria-hidden="true">↗</span></a>
+          <button class="preview-control" id="preview-control" type="button" aria-pressed="false" aria-label="Приостановить прокрутку примера"><span class="preview-control-symbol" aria-hidden="true">Ⅱ</span><span class="preview-control-label">Остановить превью</span></button>
+        </div>
+        <div class="project-devices">
+          <div class="desktop-device">
+            <div class="browser-chrome"><span class="browser-dots" aria-hidden="true"><i></i><i></i><i></i></span><span>lioznov.github.io / cosmetology.LidiaKim</span><a href="https://lioznov.github.io/cosmetology.LidiaKim/" target="_blank" rel="noopener noreferrer" aria-label="Открыть сайт Лидии Лиозновой">↗</a></div>
+            <div class="capture-viewport"><img class="site-capture" src="assets/lidia-desktop.jpg" alt="Скриншот опубликованного сайта Лидии Лиозновой: услуги, консультации и прайс-лист" width="1424" height="12263" loading="lazy" decoding="async"></div>
+          </div>
+          <div class="phone-device"><span class="phone-island" aria-hidden="true"></span><img src="assets/lidia-mobile.jpg" alt="Сайт Лидии Лиозновой на телефоне" width="375" height="811" loading="lazy" decoding="async"></div>
+          <div class="device-reflection" aria-hidden="true"></div>
+        </div>
+      </article>
       <div class="work-grid">
         <article class="work-card reveal live-preview-card"><div class="project-preview preview-photo"><div class="site-scroll photo-site"><div class="mock-nav"><span>FRAME.</span><span>Фотография · Портфолио</span></div><div class="photo-layout"><div><p class="mock-kicker">ПОРТРЕТНЫЙ ФОТОГРАФ</p><p class="photo-title">В каждом<br>кадре —<br><i>вы.</i></p><span class="mock-button">Посмотреть серии ↗</span></div><div class="photo-panel"><span class="abstract-frame" aria-hidden="true"></span><span class="panel-caption">СЕРИЯ 001 / СВЕТ И ФОРМА</span></div></div><div class="photo-gallery" aria-hidden="true"><span></span><span></span><span></span></div><div class="scroll-footer">ПОРТРЕТЫ · СОБЫТИЯ · ИСТОРИИ <span>01 / 03</span></div></div><span class="preview-hint">мини-сайт прокручивается</span></div><div class="project-meta"><div><span class="project-type">ДЕМО-КОНЦЕПТ / ПОРТФОЛИО</span><h3>Личный взгляд</h3></div><a href="#calculator" data-preset="site" aria-label="Рассчитать похожий сайт-портфолио">↗</a></div></article>
         <article class="work-card reveal live-preview-card"><div class="project-preview preview-studio"><div class="site-scroll studio-site"><div class="mock-nav"><span>FORMA / STUDIO</span><span>О нас · Проекты</span></div><div class="studio-layout"><p class="mock-kicker">ДИЗАЙН ИНТЕРЬЕРА</p><p class="studio-title">Пространство<br>для вашей<br><em>жизни.</em></p><div class="studio-bottom"><span>Функция.<br>Эстетика. Вы.</span><span class="studio-cross" aria-hidden="true">✳</span></div></div><div class="studio-project"><span class="studio-project-number">01</span><div><p>КВАРТИРА НА ТИХОЙ</p><strong>Свет, воздух<br>и точные линии.</strong></div><span class="studio-plan" aria-hidden="true"></span></div><div class="scroll-footer">МОСКВА · 2026 <span>ПРОЕКТЫ ↓</span></div></div><span class="preview-hint">мини-сайт прокручивается</span></div><div class="project-meta"><div><span class="project-type">ДЕМО-КОНЦЕПТ / ЛЕНДИНГ</span><h3>Форма и смысл</h3></div><a href="#calculator" data-preset="site" aria-label="Рассчитать похожий лендинг">↗</a></div></article>

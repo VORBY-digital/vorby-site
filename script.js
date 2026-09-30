@@ -85,10 +85,10 @@ const SITE_CONFIG = {
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
   function resetEntryScroll() {
     if (window.location.hash) history.replaceState(null, document.title, window.location.pathname + window.location.search);
-    window.scrollTo(0, 0);
+    window.scrollTo({top:0, left:0, behavior:'instant'});
   }
   resetEntryScroll();
-  window.addEventListener('pageshow', resetEntryScroll, {once:true});
+  window.addEventListener('pageshow', resetEntryScroll);
 
   // Тема сохраняется только в браузере посетителя: сервер и аккаунты не нужны.
   const themeToggle = $('#theme-toggle');
@@ -102,7 +102,7 @@ const SITE_CONFIG = {
     themeToggle.setAttribute('aria-label', isLight ? 'Включить тёмную тему' : 'Включить светлую тему');
     themeToggle.title = isLight ? 'Включить тёмную тему' : 'Включить светлую тему';
     themeLabel.textContent = isLight ? 'Светлая' : 'Тёмная';
-    themeMeta.setAttribute('content', isLight ? '#f6f4ee' : '#111211');
+    themeMeta.setAttribute('content', isLight ? '#f7fafc' : '#080e12');
     try {localStorage.setItem('vorby-theme', isLight ? 'light' : 'dark');} catch {}
     window.dispatchEvent(new CustomEvent('vorby-theme-change', {detail:{theme:isLight ? 'light' : 'dark'}}));
     if (!animate || motion.matches) return;
@@ -114,7 +114,20 @@ const SITE_CONFIG = {
   }
   applyTheme(document.documentElement.dataset.theme === 'light' ? 'light' : 'dark');
   themeToggle.addEventListener('click', () => {
-    applyTheme(document.documentElement.dataset.theme === 'light' ? 'dark' : 'light', true);
+    const next = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
+    const rect = themeToggle.getBoundingClientRect();
+    const x = rect.left + rect.width / 2, y = rect.top + rect.height / 2;
+    const root = document.documentElement;
+    root.style.setProperty('--theme-x', x + 'px');
+    root.style.setProperty('--theme-y', y + 'px');
+    root.style.setProperty('--theme-radius', Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y)) + 'px');
+    if (!motion.matches && typeof document.startViewTransition === 'function') {
+      // Снимки двух тем раскрываются кругом от самого переключателя.
+      if (themeToggle.dataset.switching) return;
+      themeToggle.dataset.switching = 'true';
+      const transition = document.startViewTransition(() => applyTheme(next));
+      transition.finished.catch(() => {}).finally(() => {delete themeToggle.dataset.switching;});
+    } else applyTheme(next, true);
   });
 
   // Все суммы берутся из одного объекта конфигурации.
@@ -365,7 +378,7 @@ const SITE_CONFIG = {
     word.className = 'word-out';
     wordTimer = setTimeout(() => {wordIndex = (wordIndex + 1) % words.length; word.textContent = words[wordIndex]; word.className = 'word-in';}, 250);
   }
-  const wordInterval = setInterval(rotateWord, 3800);
+  let wordInterval = setInterval(rotateWord, 3800);
   motion.addEventListener('change', () => {if (motion.matches) {clearTimeout(wordTimer); word.className = ''; word.textContent = words[0];}});
 
   // На телефоне сумма остаётся под рукой, пока посетитель выбирает услуги.
@@ -379,4 +392,5 @@ const SITE_CONFIG = {
   // Запуск основного интерфейса.
   renderExtras();
   window.addEventListener('pagehide', () => {clearInterval(wordInterval); clearTimeout(wordTimer); clearTimeout(toastTimer);});
+  window.addEventListener('pageshow', event => {if (event.persisted) wordInterval = setInterval(rotateWord, 3800);});
 })();
