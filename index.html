@@ -9,23 +9,30 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23111211'/%3E%3Cpath d='M12 17h11l9 25 9-25h11L37 49H27Z' fill='%23c7f36b'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="styles.css?v=depth-20260930">
   <link rel="stylesheet" href="design.css?v=depth-20260930">
-  <link rel="stylesheet" href="cinema.css?v=depth-20260930">
+  <link rel="stylesheet" href="cinema.css?v=parallax-20260930-2">
   <script src="script.js?v=depth-20260930" defer></script>
   <script src="rubik.js?v=depth-20260930" defer></script>
   <script src="motion.js?v=depth-20260930" defer></script>
-  <script src="cinema.js?v=depth-20260930" defer></script>
+  <script src="cinema.js?v=parallax-20260930-2" defer></script>
+  <script src="titles.js?v=parallax-20260930-2" defer></script>
 </head>
 <body>
   <div class="parallax-world" aria-hidden="true">
-    <div class="depth-layer depth-far" data-depth="0.12"><div class="depth-sun"></div><div class="depth-aura"></div><div class="depth-grid"></div></div>
-    <div class="depth-layer depth-middle" data-depth="0.32">
+    <div class="depth-layer depth-far" data-depth="0.14"><div class="depth-sun"></div><div class="depth-aura"></div><div class="depth-grid"></div>
+      <svg class="scene-panorama" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" fill="none"><defs><linearGradient id="horizon-stone" x1="900" y1="630" x2="1450" y2="1100" gradientUnits="userSpaceOnUse"><stop class="structure-light"/><stop offset="1" class="structure-shadow"/></linearGradient></defs><circle cx="1100" cy="380" r="380" class="horizon-disc"/><g class="horizon-land"><path d="M500 1040 1020 660 1770 840 1520 1120Z" fill="url(#horizon-stone)"/><path d="m700 1040 410-300 620 145M805 1040l360-260 555 128M955 1040l270-192 435 99" class="land-contours"/><path d="M840 840 1030 700 1120 725 960 850Z" class="horizon-facet"/><path d="m1380 610 200-80 140 58v185l-165 80-175-59Z" class="horizon-monolith"/></g></svg>
+    </div>
+    <div class="depth-layer depth-middle" data-depth="0.46">
+      <svg class="scene-architecture" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" fill="none"><defs><linearGradient id="portal-metal" x1="830" y1="210" x2="1430" y2="740" gradientUnits="userSpaceOnUse"><stop class="structure-light"/><stop offset=".18" class="metal-stop-a"/><stop offset=".44" class="structure-shadow"/><stop offset=".69" class="metal-stop-c"/><stop offset=".85" class="structure-shadow"/><stop offset="1" class="structure-light"/></linearGradient><linearGradient id="platform-metal" x1="800" y1="740" x2="1330" y2="950" gradientUnits="userSpaceOnUse"><stop class="structure-light"/><stop offset="1" class="structure-shadow"/></linearGradient></defs><g class="portal-structure" transform="rotate(-18 1110 490)"><ellipse cx="1150" cy="508" rx="262" ry="344" class="portal-extrusion"/><ellipse cx="1110" cy="490" rx="262" ry="344" stroke="url(#portal-metal)" stroke-width="68"/><ellipse cx="1110" cy="490" rx="290" ry="373" class="portal-edge"/><ellipse cx="1110" cy="490" rx="231" ry="313" class="portal-inner-edge"/></g><g class="scene-platform"><path d="m810 825 265-104 354 88-264 112Z" fill="url(#platform-metal)"/><path d="m810 825 355 96v63l-355-92Z" class="structure-front"/><path d="m1165 921 264-112v61l-264 114Z" class="structure-side"/><path d="m865 836 228-90 264 68-225 94Z" class="platform-inset"/><path d="m921 822 263 67m-198-93 264 69m-191-96 264 69" class="platform-lines"/></g><g class="distant-module"><path d="m1520 430 145-57 139 57-145 64Z" class="structure-top"/><path d="m1520 430 139 64v154l-139-55Z" class="structure-front"/><path d="m1659 494 145-64v154l-145 64Z" class="structure-side"/></g></svg>
       <svg class="depth-ribbons" viewBox="0 0 1600 1000" fill="none" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="ribbon-metal" x1="0" y1="0" x2="1600" y2="1000" gradientUnits="userSpaceOnUse"><stop class="metal-stop-a"/><stop offset=".28" class="metal-stop-b"/><stop offset=".48" class="metal-stop-c"/><stop offset=".62" class="metal-stop-a"/><stop offset="1" class="metal-stop-b"/></linearGradient></defs><g stroke="url(#ribbon-metal)"><path d="M1780 110C970-380 920 620 1570 430S370-140-140 350" stroke-width="3"/><path d="M1750 148C1000-330 965 600 1550 470S355-105-110 386" stroke-width="1" opacity=".45"/><path d="M-320 780C370 110 690 1280 1680 790" stroke-width="2"/><path d="M-280 830C420 170 740 1340 1700 850" stroke-width="1" opacity=".4"/></g></svg>
       <div class="depth-torus torus-one"></div><div class="depth-torus torus-two"></div><div class="depth-orb orb-one"></div><div class="depth-orb orb-two"></div>
     </div>
-    <div class="depth-layer depth-near" data-depth="0.65"><div class="depth-fragments"></div><div class="depth-grain"></div><div class="depth-vignette"></div></div>
     <canvas class="scene-dust"></canvas>
   </div>
   <div class="cube-space" aria-hidden="true"><div class="cube-voyager"><canvas id="rubik-canvas" data-scroll-cube="hero" data-cinematic="true"></canvas><div class="voyager-halo"></div></div></div>
+  <div class="foreground-space" aria-hidden="true"><div class="depth-layer depth-near" data-depth="0.92">
+    <svg class="scene-foreground" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" fill="none"><g transform="rotate(-18 0 800)"><path d="m-200 670 205-90 202 89-205 96Z" class="structure-top"/><path d="m-200 670 202 95v235l-202-87Z" class="structure-front"/><path d="m2 765 205-96v235L2 1000Z" class="structure-side"/><path d="m-166 681 170-72 158 64-167 77Z" class="near-inlay"/></g><g transform="rotate(19 1630 180)"><path d="m1500 30 218-81 212 99-219 90Z" class="structure-top"/><path d="m1500 30 211 108v245L1500 273Z" class="structure-front"/><path d="m1711 138 219-90v245l-219 90Z" class="structure-side"/><path d="m1531 63 152 75v170l-152-76Z" class="near-inlay"/></g><path d="m1530 1030 220-480 85 65-155 470Z" class="near-prism"/></svg>
+    <div class="depth-fragments"></div>
+  </div><div class="depth-grain"></div><div class="depth-vignette"></div></div>
   <div class="ambient-scene" aria-hidden="true"><div class="ambient-orb ambient-orb-one"></div><div class="ambient-orb ambient-orb-two"></div><div class="ambient-grid"></div></div>
   <div class="theme-wipe" aria-hidden="true"></div>
   <a class="skip-link" href="#main">Перейти к содержимому</a>

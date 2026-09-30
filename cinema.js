@@ -4,7 +4,11 @@
   const clamp = value => Math.max(0,Math.min(1,value));
   const smooth = value => {const p=clamp(value);return p*p*(3-2*p);};
   const mix = (a,b,p) => a+(b-a)*p;
-  if (typeof module !== 'undefined' && module.exports) module.exports={clamp,smooth,mix};
+  function planeMotion(travel,index,width,height,mx=0,my=0){
+    const depth=[.14,.46,.92][index],phase=travel*.75;
+    return {x:(Math.sin(phase)*Math.min(width*.075,110)+mx*155)*depth,y:(-Math.sin(phase)*height*.27+my*110)*depth,turn:Math.sin(phase*.6)*4*depth,scale:1+Math.sin(phase*.55)*.035*depth};
+  }
+  if (typeof module !== 'undefined' && module.exports) module.exports={clamp,smooth,mix,planeMotion};
   if (typeof document === 'undefined') return;
   const root=document.documentElement;
   const reduced=matchMedia('(prefers-reduced-motion: reduce)');
@@ -12,6 +16,7 @@
   const hero=document.querySelector('#home');
   const stage=document.querySelector('.hero-visual');
   const voyager=document.querySelector('.cube-voyager');
+  const cubeSpace=document.querySelector('.cube-space');
   const world=document.querySelector('.parallax-world');
   const layers=[...document.querySelectorAll('.depth-layer')];
   const sections=[...document.querySelectorAll('main > section[id]')];
@@ -20,11 +25,12 @@
   const ctx=dust.getContext('2d',{alpha:true});
   const fragments=document.querySelector('.depth-fragments');
   const pieces=[];
-  const locations=[[4,15,19],[94,7,25],[97,71,36],[2,77,28],[14,93,13],[87,92,17],[5,48,12],[93,39,10]];
+  const locations=[[2,17,64],[98,5,82],[97,68,116],[1,78,92],[10,94,42],[90,94,48],[3,48,34],[98,39,32]];
   locations.forEach(([x,y,size],i)=>{
     const item=document.createElement('span');item.className='depth-fragment';
     item.style.setProperty('--size',size+'px');
-    item.style.setProperty('--fragment-alpha',i%3===0?'.48':'.22');
+    item.style.setProperty('--fragment-alpha',i%3===0?'.6':'.32');
+    item.style.setProperty('--fragment-blur',i%3===0?'1px':'0px');
     const solid=document.createElement('span');solid.className='fragment-solid';
     for(let f=0;f<6;f++){const face=document.createElement('i');face.className='fragment-face';solid.append(face);}
     item.append(solid);fragments.append(item);pieces.push({item,solid,x,y,i});
@@ -37,6 +43,11 @@
   function colors(){dustColor=getComputedStyle(root).getPropertyValue('--scene-a').trim();}
   function measure(){
     width=innerWidth;height=innerHeight;maxScroll=Math.max(1,document.documentElement.scrollHeight-height);
+    // На телефоне это обычный элемент своего блока, не плавающая сцена.
+    const host=width<=900?stage:cubeSpace;
+    if(voyager.parentElement!==host)host.prepend(voyager);
+    voyager.dataset.mode=width<=900?'local':'roaming';
+    if(width<=900){voyager.style.removeProperty('--cube-x');voyager.style.removeProperty('--cube-y');voyager.style.removeProperty('--cube-scale');voyager.style.removeProperty('--cube-opacity');}
     const stageTop=stage.getBoundingClientRect().top+scrollY;
     assemblyRange=width<=900
       ? Math.max(350,stageTop+stage.clientHeight*.85-height*.4)
@@ -54,7 +65,7 @@
   function drawDust(progress){
     if(!ctx||reduced.matches)return;
     ctx.clearRect(0,0,width,height);ctx.fillStyle=dustColor;ctx.strokeStyle=dustColor;
-    for(const star of stars){
+    for(const star of stars.slice(0,width<=900?18:48)){
       const x=star.x*width+mouseX*star.r*15+Math.sin(progress*5+star.x*6)*18;
       const y=((star.y*height-progress*(70+star.r*90))%height+height)%height;
       ctx.globalAlpha=star.r>1.5?.5:.22;
@@ -81,32 +92,36 @@
     frame=0;
     if(document.hidden)return;
     const still=reduced.matches;
-    scroll=still?targetScroll:mix(scroll,targetScroll,.14);
+    const mobile=width<=900;
+    scroll=still||mobile?targetScroll:mix(scroll,targetScroll,.14);
     mouseX=still?0:mix(mouseX,targetX,.085);mouseY=still?0:mix(mouseY,targetY,.085);
     const progress=clamp(scroll/maxScroll);
     const range=assemblyRange;
     const phase=scroll/range;
     const assembly=clamp(phase);
-    const stageRect=stage.getBoundingClientRect();
-    const handoff=still?0:smooth((scroll-handoffStart)/handoffRange);
-    const journey=path(clamp((scroll-handoffStart)/Math.max(1,maxScroll-handoffStart)));
-    const x=mix(stageRect.left+stageRect.width/2,journey.x,handoff);
-    const y=mix(stageRect.top+stageRect.height/2,journey.y,handoff);
-    const scale=mix(1,journey.s,handoff);
-    const opacity=still?(stageRect.bottom>0&&stageRect.top<height?1:0):mix(1,journey.o,handoff);
-    voyager.style.setProperty('--cube-x',(x-size/2).toFixed(2)+'px');
-    voyager.style.setProperty('--cube-y',(y-size/2).toFixed(2)+'px');
-    voyager.style.setProperty('--cube-scale',scale.toFixed(4));
-    voyager.style.setProperty('--cube-opacity',opacity.toFixed(4));
+    if(!mobile){
+      const stageRect=stage.getBoundingClientRect();
+      const handoff=still?0:smooth((scroll-handoffStart)/handoffRange);
+      const journey=path(clamp((scroll-handoffStart)/Math.max(1,maxScroll-handoffStart)));
+      const x=mix(stageRect.left+stageRect.width/2,journey.x,handoff);
+      const y=mix(stageRect.top+stageRect.height/2,journey.y,handoff);
+      const scale=mix(1,journey.s,handoff);
+      const opacity=still?(stageRect.bottom>0&&stageRect.top<height?1:0):mix(1,journey.o,handoff);
+      voyager.style.setProperty('--cube-x',(x-size/2).toFixed(2)+'px');
+      voyager.style.setProperty('--cube-y',(y-size/2).toFixed(2)+'px');
+      voyager.style.setProperty('--cube-scale',scale.toFixed(4));
+      voyager.style.setProperty('--cube-opacity',opacity.toFixed(4));
+    }
     hero.style.setProperty('--hero-progress',assembly.toFixed(4));
     hero.style.setProperty('--intro-opacity',still?'1':(1-smooth((phase-.78)/.48)).toFixed(3));
     hero.style.setProperty('--intro-y',still?'0px':(-smooth((phase-.78)/.48)*30).toFixed(2)+'px');
     hero.style.setProperty('--assembly-flash',still?'0':(Math.exp(-Math.pow((assembly-.92)/.052,2))*.35).toFixed(3));
     layers.forEach((layer,i)=>{
-      const factor=[.12,.32,.65][i];
-      layer.style.setProperty('--layer-x',still?'0px':(mouseX*100*factor+Math.sin(progress*5)*36*factor).toFixed(2)+'px');
-      layer.style.setProperty('--layer-y',still?'0px':(-progress*250*factor+mouseY*75*factor).toFixed(2)+'px');
-      layer.style.setProperty('--layer-turn',still?'0deg':((progress-.1)*factor*14).toFixed(3)+'deg');
+      const pose=planeMotion(scroll/height,i,width,height,mouseX,mouseY),weight=mobile?.35:1;
+      layer.style.setProperty('--layer-x',still?'0px':(pose.x*weight).toFixed(2)+'px');
+      layer.style.setProperty('--layer-y',still?'0px':(pose.y*weight).toFixed(2)+'px');
+      layer.style.setProperty('--layer-turn',still?'0deg':(pose.turn*weight).toFixed(3)+'deg');
+      layer.style.setProperty('--camera-scale',still?'1':mix(1,pose.scale,weight).toFixed(4));
     });
     world.style.setProperty('--sun-scale',still?'1':(1+Math.sin(progress*Math.PI)*.25).toFixed(4));
     world.style.setProperty('--ribbon-turn',still?'0deg':(progress*24).toFixed(3)+'deg');
@@ -129,7 +144,7 @@
   }
   function queue(){if(!frame&&!document.hidden)frame=requestAnimationFrame(paint);}
   addEventListener('scroll',()=>{targetScroll=scrollY;queue();},{passive:true});
-  addEventListener('pointermove',event=>{if(reduced.matches||!fine.matches)return;targetX=event.clientX/width-.5;targetY=event.clientY/height-.5;queue();},{passive:true});
+  addEventListener('pointermove',event=>{if(reduced.matches||!fine.matches||width<=900)return;targetX=event.clientX/width-.5;targetY=event.clientY/height-.5;queue();},{passive:true});
   document.addEventListener('pointerleave',()=>{targetX=targetY=0;queue();});
   addEventListener('resize',measure);
   addEventListener('pageshow',()=>{scroll=targetScroll=scrollY;measure();});
