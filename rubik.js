@@ -58,6 +58,24 @@
     }
   }
 
+  // Один раз вычисляем все законченные ходы. Между ними меняется только угол слоя.
+  function solveSnapshots() {
+    const state=new CubeState(), snapshots=[];
+    SCRAMBLE.forEach(move=>state.turn(move));
+    const save=()=>snapshots.push(state.cubies.map(cubie=>({position:cubie.position.slice(),orientation:new Float32Array(cubie.orientation)})));
+    save();inverseMoves(SCRAMBLE).forEach(move=>{state.turn(move);save();});
+    return snapshots;
+  }
+  function restoreSnapshot(cube,snapshot) {
+    cube.cubies.forEach((cubie,i)=>{cubie.position=snapshot[i].position.slice();cubie.orientation.set(snapshot[i].orientation);});
+  }
+  function packMeshData(meshes) {
+    const data=new Float32Array(meshes.reduce((sum,mesh)=>sum+mesh.length,0)),offsets=[];
+    let offset=0;
+    for(const mesh of meshes){offsets.push(offset/9);data.set(mesh,offset);offset+=mesh.length;}
+    return {data,offsets};
+  }
+
   // Треугольники с нормалями и цветом: position(3), normal(3), color(3).
   function makeCubieMesh(home) {
     const vertices=[];
@@ -112,7 +130,7 @@
   }
 
   // Экспорт только для локальной проверки перестановок; в браузере запускается ниже.
-  if (typeof module!=='undefined'&&module.exports) module.exports={CubeState,SCRAMBLE,inverseMoves,makeCubieMesh,multiply,rotation,transformPoint,perspective};
+  if (typeof module!=='undefined'&&module.exports) module.exports={CubeState,SCRAMBLE,inverseMoves,makeCubieMesh,multiply,rotation,transformPoint,perspective,solveSnapshots,restoreSnapshot,packMeshData};
   if (typeof document==='undefined') return;
 
   function startCube(canvasId='rubik-canvas',scrollDriven=false) {
@@ -121,10 +139,12 @@
     const navCube=canvasId==='rubik-nav-canvas';
     const cinematic=canvas.dataset.cinematic==='true';
     scrollDriven=scrollDriven||canvas.dataset.scrollCube==='hero';
-    const visual=canvas.closest('.hero-visual')||canvas.parentElement;
+    const visual=canvas.closest('.cube-voyager')||canvas.closest('.hero-visual')||canvas.parentElement;
     const status=document.getElementById(navCube?'nav-cube-status':'cube-status')||{textContent:''};
     const motion=window.matchMedia('(prefers-reduced-motion: reduce)');
     const cube=new CubeState();
+    const snapshots=scrollDriven?solveSnapshots():null;
+    let completedState=-1;
     let gl;
     try {gl=canvas.dataset.force2d?null:canvas.getContext('webgl',{alpha:true,antialias:true,powerPreference:'low-power'});} catch {gl=null;}
 
@@ -132,8 +152,9 @@
     // Цветные грани сортируются по глубине, поэтому это не плоская картинка.
     const fallback=gl?null:canvas.getContext('2d');
     if (!gl&&!fallback) {status.textContent='ИЗ ДЕТАЛЕЙ — В ЦЕЛОЕ';return;}
-    let program, locations;
+    let program, locations,vertexBuffer;
     let meshes=cube.cubies.map(cubie=>({cubie,data:makeCubieMesh(cubie.home),buffer:null}));
+    let packed=packMeshData(meshes.map(mesh=>mesh.data));
     function shader(type,source) {
       const handle=gl.createShader(type); gl.shaderSource(handle,source); gl.compileShader(handle);
       if (!gl.getShaderParameter(handle,gl.COMPILE_STATUS)) {gl.deleteShader(handle);throw new Error('Cube shader compilation failed');}
@@ -181,21 +202,16 @@
       if (!gl.getProgramParameter(program,gl.LINK_STATUS)) throw new Error('Cube shader linking failed');
       gl.useProgram(program);
       locations={position:gl.getAttribLocation(program,'a_position'),normal:gl.getAttribLocation(program,'a_normal'),color:gl.getAttribLocation(program,'a_color'),model:gl.getUniformLocation(program,'u_model'),projectionView:gl.getUniformLocation(program,'u_projectionView'),lightTheme:gl.getUniformLocation(program,'u_lightTheme')};
-      for (const mesh of meshes) {mesh.buffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,mesh.buffer);gl.bufferData(gl.ARRAY_BUFFER,mesh.data,gl.STATIC_DRAW);}
+      vertexBuffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,vertexBuffer);gl.bufferData(gl.ARRAY_BUFFER,packed.data,gl.STATIC_DRAW);
       gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);
       // Отсечение граней не нужно: накладки и фаски имеют явные нормали.
       gl.clearColor(0,0,0,0);
     }
     function refreshTheme() {
-      const previous=meshes;
       meshes=cube.cubies.map(cubie=>({cubie,data:makeCubieMesh(cubie.home),buffer:null}));
+      packed=packMeshData(meshes.map(mesh=>mesh.data));
       if (gl&&locations) {
-        previous.forEach(mesh=>gl.deleteBuffer(mesh.buffer));
-        for (const mesh of meshes) {
-          mesh.buffer=gl.createBuffer();
-          gl.bindBuffer(gl.ARRAY_BUFFER,mesh.buffer);
-          gl.bufferData(gl.ARRAY_BUFFER,mesh.data,gl.STATIC_DRAW);
-        }
+        gl.bindBuffer(gl.ARRAY_BUFFER,vertexBuffer);gl.bufferData(gl.ARRAY_BUFFER,packed.data,gl.STATIC_DRAW);
       }
       draw();
     }
@@ -212,25 +228,29 @@
     let width=0,height=0,dpr=1,frame=0,lastTime=0,elapsed=0,visible=true,lost=false;
     let pointerX=0,pointerY=0,tiltX=0,tiltY=0;
     let queue=inverseMoves(SCRAMBLE), index=0, active=null, wait=900, phase='solve';
-    let scrollProgress=0, targetProgress=0, appliedProgress=-1, pageProgress=0;
+    let scrollProgress=0, targetProgress=0, appliedProgress=-1, pageProgress=0,pageRange=1,available=1;
     if (!motion.matches) SCRAMBLE.forEach(move=>cube.turn(move));
     function resetSequence() {
       cube.reset();index=0;active=null;queue=inverseMoves(SCRAMBLE);phase='solve';wait=900;
+      completedState=-1;appliedProgress=-1;
       if (!motion.matches) SCRAMBLE.forEach(move=>cube.turn(move));
       status.textContent=motion.matches?'ВСЁ НА СВОИХ МЕСТАХ':'СОБИРАЕМ ПО ДЕТАЛЯМ';
     }
     resetSequence();
 
-    function readScrollTarget() {
-      if (!scrollDriven) return;
-      pageProgress=Math.max(0,Math.min(1,window.scrollY/Math.max(1,document.documentElement.scrollHeight-window.innerHeight)));
+    function measureScrollRange() {
+      pageRange=Math.max(1,document.documentElement.scrollHeight-window.innerHeight);
       const hero=document.getElementById('home');
       const stage=document.querySelector('.hero-visual');
-      const available=navCube
-        ? Math.max(1,document.documentElement.scrollHeight-window.innerHeight)
+      available=navCube
+        ? pageRange
         : cinematic&&innerWidth<=900
           ? Math.max(350,stage.getBoundingClientRect().top+scrollY+stage.clientHeight*.85-innerHeight*.4)
           : Math.max(250,hero.offsetTop+hero.offsetHeight-window.innerHeight+(cinematic?50:window.innerHeight*.35));
+    }
+    function readScrollTarget() {
+      if (!scrollDriven) return;
+      pageProgress=Math.max(0,Math.min(1,window.scrollY/pageRange));
       targetProgress=Math.max(0,Math.min(1,window.scrollY/available));
       if (motion.matches) {cube.reset();active=null;scrollProgress=0;draw();return;}
       if (!frame&&visible&&!document.hidden&&!lost) frame=requestAnimationFrame(tick);
@@ -242,13 +262,12 @@
       const solve=cinematic?Math.max(0,Math.min(1,(scrollProgress-.26)/.66)):scrollProgress;
       const raw=solve*queue.length;
       const completed=Math.min(queue.length,Math.floor(raw));
-      cube.reset();
-      SCRAMBLE.forEach(move=>cube.turn(move));
-      for (let i=0;i<completed;i++) cube.turn(queue[i]);
+      if(completed!==completedState){restoreSnapshot(cube,snapshots[completed]);completedState=completed;}
       active=completed<queue.length?{move:queue[completed],elapsed:(raw-completed)*700,duration:700}:null;
-      if (!navCube) status.textContent=completed===queue.length?'ВСЁ НА СВОИХ МЕСТАХ':'СОБИРАЕМ ПО ДЕТАЛЯМ';
-      canvas.dataset.solveProgress=scrollProgress.toFixed(3);
-      canvas.dataset.solved=String(completed===queue.length);
+      if (!navCube) {const text=completed===queue.length?'ВСЁ НА СВОИХ МЕСТАХ':'СОБИРАЕМ ПО ДЕТАЛЯМ';if(status.textContent!==text)status.textContent=text;}
+      const progressLabel=scrollProgress.toFixed(3),solved=String(completed===queue.length);
+      if(canvas.dataset.solveProgress!==progressLabel)canvas.dataset.solveProgress=progressLabel;
+      if(canvas.dataset.solved!==solved)canvas.dataset.solved=solved;
     }
 
     function advance(delta) {
@@ -312,7 +331,7 @@
       }
     }
     function draw() {
-      if (!width||!height||lost) return;
+      if (!width||!height||lost||!visible||document.hidden) return;
       const models=modelMatrices();
       if (!gl) {drawFallback(models);return;}
       gl.viewport(0,0,canvas.width,canvas.height);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.useProgram(program);
@@ -322,25 +341,27 @@
       const baseDistance=cinematic?10.7+(1-scrollProgress)*3.2:9.8;
       const distance=navCube?8.0:(aspect<1?baseDistance/aspect:baseDistance);
       gl.uniformMatrix4fv(locations.projectionView,false,multiply(perspective(Math.PI/5,aspect,.1,100),translation(0,0,-distance)));
+      gl.bindBuffer(gl.ARRAY_BUFFER,vertexBuffer);
+      for (const [location,offset] of [[locations.position,0],[locations.normal,12],[locations.color,24]]) {
+        gl.enableVertexAttribArray(location);gl.vertexAttribPointer(location,3,gl.FLOAT,false,36,offset);
+      }
       for (let i=0;i<meshes.length;i++) {
-        gl.bindBuffer(gl.ARRAY_BUFFER,meshes[i].buffer);
-        for (const [location,offset] of [[locations.position,0],[locations.normal,12],[locations.color,24]]) {
-          gl.enableVertexAttribArray(location);gl.vertexAttribPointer(location,3,gl.FLOAT,false,36,offset);
-        }
-        gl.uniformMatrix4fv(locations.model,false,models[i]);gl.drawArrays(gl.TRIANGLES,0,meshes[i].data.length/9);
+        gl.uniformMatrix4fv(locations.model,false,models[i]);gl.drawArrays(gl.TRIANGLES,packed.offsets[i],meshes[i].data.length/9);
       }
     }
     function resize() {
       width=visual.clientWidth;height=visual.clientHeight;
       dpr=Math.min(window.devicePixelRatio||1,1.75);
-      canvas.width=Math.max(1,Math.round(width*dpr));canvas.height=Math.max(1,Math.round(height*dpr));
+      const pixelWidth=Math.max(1,Math.round(width*dpr)),pixelHeight=Math.max(1,Math.round(height*dpr));
+      if(canvas.width!==pixelWidth||canvas.height!==pixelHeight){canvas.width=pixelWidth;canvas.height=pixelHeight;}
+      measureScrollRange();
       readScrollTarget();
       draw();
     }
     function tick(time) {
       frame=0;
       if (!visible||document.hidden||motion.matches||lost) {lastTime=0;return;}
-      if(!navCube&&lastTime&&time-lastTime<30){frame=requestAnimationFrame(tick);return;}
+      if(lastTime&&time-lastTime<(gl?(navCube?0:30):50)){frame=requestAnimationFrame(tick);return;}
       const delta=lastTime?Math.min(70,time-lastTime):0;lastTime=time;elapsed+=delta;
       tiltX+=(pointerX-tiltX)*.06;tiltY+=(pointerY-tiltY)*.06;
       if (scrollDriven) {
@@ -355,6 +376,8 @@
     }
     function sync() {
       if (frame) cancelAnimationFrame(frame);frame=0;lastTime=0;
+      canvas.dataset.renderState=visible&&!document.hidden&&!lost?'active':'paused';
+      if(!visible||document.hidden||lost)return;
       if (motion.matches) {cube.reset();active=null;elapsed=0;tiltX=0;tiltY=0;scrollProgress=0;draw();}
       else if (scrollDriven) {appliedProgress=-1;readScrollTarget();scrollProgress=targetProgress;syncScrollCube();draw();}
       else if (visible&&!document.hidden&&!lost) frame=requestAnimationFrame(tick);
@@ -371,6 +394,7 @@
     document.addEventListener('visibilitychange',sync);
     motion.addEventListener('change',()=>{resetSequence();sync();});
     window.addEventListener('vorby-theme-change',refreshTheme);
+    window.addEventListener('vorby-layout-measured',event=>{pageRange=event.detail.maxScroll;available=navCube?pageRange:event.detail.assemblyRange;readScrollTarget();});
     if (scrollDriven) window.addEventListener('scroll',readScrollTarget,{passive:true});
     canvas.addEventListener('webglcontextlost',event=>{event.preventDefault();lost=true;sync();});
     canvas.addEventListener('webglcontextrestored',()=>{lost=false;setupGL();resize();sync();});

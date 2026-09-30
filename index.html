@@ -9,11 +9,11 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23111211'/%3E%3Cpath d='M12 17h11l9 25 9-25h11L37 49H27Z' fill='%23c7f36b'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="styles.css?v=depth-20260930">
   <link rel="stylesheet" href="design.css?v=depth-20260930">
-  <link rel="stylesheet" href="cinema.css?v=parallax-20260930-2">
+  <link rel="stylesheet" href="cinema.css?v=performance-20260930-3">
   <script src="script.js?v=depth-20260930" defer></script>
-  <script src="rubik.js?v=depth-20260930" defer></script>
-  <script src="motion.js?v=depth-20260930" defer></script>
-  <script src="cinema.js?v=parallax-20260930-2" defer></script>
+  <script src="rubik.js?v=performance-20260930-3" defer></script>
+  <script src="motion.js?v=performance-20260930-3" defer></script>
+  <script src="cinema.js?v=performance-20260930-3" defer></script>
   <script src="titles.js?v=parallax-20260930-2" defer></script>
 </head>
 <body>
@@ -28,7 +28,6 @@
     </div>
     <canvas class="scene-dust"></canvas>
   </div>
-  <div class="cube-space" aria-hidden="true"><div class="cube-voyager"><canvas id="rubik-canvas" data-scroll-cube="hero" data-cinematic="true"></canvas><div class="voyager-halo"></div></div></div>
   <div class="foreground-space" aria-hidden="true"><div class="depth-layer depth-near" data-depth="0.92">
     <svg class="scene-foreground" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" fill="none"><g transform="rotate(-18 0 800)"><path d="m-200 670 205-90 202 89-205 96Z" class="structure-top"/><path d="m-200 670 202 95v235l-202-87Z" class="structure-front"/><path d="m2 765 205-96v235L2 1000Z" class="structure-side"/><path d="m-166 681 170-72 158 64-167 77Z" class="near-inlay"/></g><g transform="rotate(19 1630 180)"><path d="m1500 30 218-81 212 99-219 90Z" class="structure-top"/><path d="m1500 30 211 108v245L1500 273Z" class="structure-front"/><path d="m1711 138 219-90v245l-219 90Z" class="structure-side"/><path d="m1531 63 152 75v170l-152-76Z" class="near-inlay"/></g><path d="m1530 1030 220-480 85 65-155 470Z" class="near-prism"/></svg>
     <div class="depth-fragments"></div>
@@ -67,6 +66,7 @@
           <div class="hero-notes"><span>Для специалистов и малого бизнеса</span><span>Удобно на телефоне</span></div>
         </div>
         <div class="hero-visual" aria-hidden="true">
+          <div class="cube-voyager" data-mode="local"><canvas id="rubik-canvas" data-scroll-cube="hero" data-cinematic="true"></canvas><div class="voyager-halo"></div></div>
           <div class="visual-grid"></div>
           <div class="cube-atmosphere" aria-hidden="true">
             <svg class="cube-orbits" viewBox="0 0 600 640" fill="none"><defs><linearGradient id="orbit-gradient" x1="80" y1="100" x2="500" y2="580" gradientUnits="userSpaceOnUse"><stop stop-color="#65f7c0"/><stop offset=".5" stop-color="#6ba5ff"/><stop offset="1" stop-color="#65f7c0" stop-opacity="0"/></linearGradient></defs><g stroke="url(#orbit-gradient)"><ellipse cx="300" cy="320" rx="252" ry="94" transform="rotate(-32 300 320)"/><ellipse cx="300" cy="320" rx="220" ry="124" transform="rotate(52 300 320)" stroke-dasharray="2 9"/><circle cx="300" cy="320" r="204" stroke-opacity=".18"/><path d="M300 48v28M300 564v28M36 320h28M536 320h28" stroke-opacity=".6"/></g><circle cx="90" cy="453" r="4" fill="#65f7c0"/><circle cx="492" cy="165" r="3" fill="#81b8ff"/></svg>
