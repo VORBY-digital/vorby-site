@@ -77,16 +77,13 @@
   }
 
   // Треугольники с нормалями и цветом: position(3), normal(3), color(3).
-  function makeCubieMesh(home,classic=false) {
+  function makeCubieMesh(home) {
     const vertices=[];
     const lightTheme=typeof document!=='undefined'&&document.documentElement.dataset.theme==='light';
     const half=.472, inner=.415;
-    const plastic=classic?(lightTheme?[.78,.80,.84]:[.042,.048,.039]):lightTheme?[.82,.75,.65]:[.065,.075,.09];
-    const colors=classic
-      ? lightTheme
-        ? [[.88,.20,.25],[.94,.48,.12],[.99,.99,.96],[.93,.69,.08],[.24,.62,.43],[.24,.38,.83]]
-        : [[.98,.30,.23],[1,.58,.16],[.93,.96,.91],[1,.84,.20],[.66,.90,.30],[.22,.46,.94]]
-      : lightTheme
+    // Одна палитра для телефона, компьютера и маленького кубика в шапке.
+    const plastic=lightTheme?[.82,.75,.65]:[.065,.075,.09];
+    const colors=lightTheme
       ? [[.60,.18,.30],[.86,.51,.35],[.97,.94,.86],[.83,.67,.40],[.44,.52,.42],[.62,.43,.50]]
       : [[.81,.92,.42],[.35,.76,.74],[.92,.91,.87],[.53,.56,.91],[.89,.60,.47],[.33,.47,.61]];
     function polygon(points,color,explicitNormal) {
@@ -161,7 +158,7 @@
     const fallback=gl?null:canvas.getContext('2d');
     if (!gl&&!fallback) {status.textContent='ИЗ ДЕТАЛЕЙ — В ЦЕЛОЕ';return;}
     let program, locations,vertexBuffer;
-    let meshes=cube.cubies.map(cubie=>({cubie,data:makeCubieMesh(cubie.home,mobileAuto),buffer:null}));
+    let meshes=cube.cubies.map(cubie=>({cubie,data:makeCubieMesh(cubie.home),buffer:null}));
     let packed=packMeshData(meshes.map(mesh=>mesh.data));
     function shader(type,source) {
       const handle=gl.createShader(type); gl.shaderSource(handle,source); gl.compileShader(handle);
@@ -225,7 +222,7 @@
       gl.clearColor(0,0,0,0);
     }
     function refreshTheme() {
-      meshes=cube.cubies.map(cubie=>({cubie,data:makeCubieMesh(cubie.home,mobileAuto),buffer:null}));
+      meshes=cube.cubies.map(cubie=>({cubie,data:makeCubieMesh(cubie.home),buffer:null}));
       packed=packMeshData(meshes.map(mesh=>mesh.data));
       if (gl&&locations) {
         gl.bindBuffer(gl.ARRAY_BUFFER,vertexBuffer);gl.bufferData(gl.ARRAY_BUFFER,packed.data,gl.STATIC_DRAW);
