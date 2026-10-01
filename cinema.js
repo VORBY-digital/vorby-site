@@ -89,10 +89,10 @@
     const range=assemblyRange;
     const phase=scroll/range;
     const assembly=clamp(phase);
-    setStyle(hero,'--hero-progress',assembly.toFixed(4));
+    setStyle(hero,'--hero-progress',mobile?'0.0000':assembly.toFixed(4));
     setStyle(hero,'--intro-opacity',still?'1':(1-smooth((phase-.78)/.48)).toFixed(3));
     setStyle(hero,'--intro-y',still?'0px':(-smooth((phase-.78)/.48)*30).toFixed(2)+'px');
-    setStyle(hero,'--assembly-flash',still?'0':(Math.exp(-Math.pow((assembly-.92)/.052,2))*.35).toFixed(3));
+    setStyle(hero,'--assembly-flash',still||mobile?'0':(Math.exp(-Math.pow((assembly-.92)/.052,2))*.35).toFixed(3));
     layers.forEach((layer,i)=>{
       const pose=planeMotion(scroll/height,i,width,height,mouseX,mouseY),weight=mobile?.35:1;
       setStyle(layer,'--layer-x',still?'0px':(pose.x*weight).toFixed(2)+'px');

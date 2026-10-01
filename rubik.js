@@ -77,12 +77,16 @@
   }
 
   // Треугольники с нормалями и цветом: position(3), normal(3), color(3).
-  function makeCubieMesh(home) {
+  function makeCubieMesh(home,classic=false) {
     const vertices=[];
     const lightTheme=typeof document!=='undefined'&&document.documentElement.dataset.theme==='light';
     const half=.472, inner=.415;
-    const plastic=lightTheme?[.82,.75,.65]:[.065,.075,.09];
-    const colors=lightTheme
+    const plastic=classic?(lightTheme?[.78,.80,.84]:[.042,.048,.039]):lightTheme?[.82,.75,.65]:[.065,.075,.09];
+    const colors=classic
+      ? lightTheme
+        ? [[.88,.20,.25],[.94,.48,.12],[.99,.99,.96],[.93,.69,.08],[.24,.62,.43],[.24,.38,.83]]
+        : [[.98,.30,.23],[1,.58,.16],[.93,.96,.91],[1,.84,.20],[.66,.90,.30],[.22,.46,.94]]
+      : lightTheme
       ? [[.60,.18,.30],[.86,.51,.35],[.97,.94,.86],[.83,.67,.40],[.44,.52,.42],[.62,.43,.50]]
       : [[.81,.92,.42],[.35,.76,.74],[.92,.91,.87],[.53,.56,.91],[.89,.60,.47],[.33,.47,.61]];
     function polygon(points,color,explicitNormal) {
@@ -137,13 +141,17 @@
     const canvas=document.getElementById(canvasId);
     if (!canvas) return;
     const navCube=canvasId==='rubik-nav-canvas';
-    const cinematic=canvas.dataset.cinematic==='true';
-    scrollDriven=scrollDriven||canvas.dataset.scrollCube==='hero';
+    const mobile=window.matchMedia('(max-width: 900px)');
+    const requestedCinematic=canvas.dataset.cinematic==='true';
+    const requestedScrollDriven=scrollDriven||canvas.dataset.scrollCube==='hero';
+    let mobileAuto=!navCube&&mobile.matches;
+    let cinematic=requestedCinematic&&!mobileAuto;
+    scrollDriven=requestedScrollDriven&&!mobileAuto;
     const visual=canvas.closest('.cube-voyager')||canvas.closest('.hero-visual')||canvas.parentElement;
     const status=document.getElementById(navCube?'nav-cube-status':'cube-status')||{textContent:''};
     const motion=window.matchMedia('(prefers-reduced-motion: reduce)');
     const cube=new CubeState();
-    const snapshots=scrollDriven?solveSnapshots():null;
+    const snapshots=requestedScrollDriven?solveSnapshots():null;
     let completedState=-1;
     let gl;
     try {gl=canvas.dataset.force2d?null:canvas.getContext('webgl',{alpha:true,antialias:true,powerPreference:'low-power'});} catch {gl=null;}
@@ -153,7 +161,7 @@
     const fallback=gl?null:canvas.getContext('2d');
     if (!gl&&!fallback) {status.textContent='ИЗ ДЕТАЛЕЙ — В ЦЕЛОЕ';return;}
     let program, locations,vertexBuffer;
-    let meshes=cube.cubies.map(cubie=>({cubie,data:makeCubieMesh(cubie.home),buffer:null}));
+    let meshes=cube.cubies.map(cubie=>({cubie,data:makeCubieMesh(cubie.home,mobileAuto),buffer:null}));
     let packed=packMeshData(meshes.map(mesh=>mesh.data));
     function shader(type,source) {
       const handle=gl.createShader(type); gl.shaderSource(handle,source); gl.compileShader(handle);
@@ -181,11 +189,20 @@
       const fragment=shader(gl.FRAGMENT_SHADER,`
         precision mediump float;
         uniform float u_lightTheme;
+        uniform float u_classic;
         varying mediump vec3 v_normal;
         varying mediump vec3 v_color;
         varying mediump vec3 v_world;
         void main() {
           vec3 normal=normalize(v_normal);
+          if(u_classic>0.5) {
+            vec3 light=normalize(vec3(-0.5,0.85,0.9));
+            vec3 view=normalize(vec3(0.0,0.0,10.0)-v_world);
+            float diffuse=max(dot(normal,light),0.0);
+            float shine=pow(max(dot(normal,normalize(light+view)),0.0),48.0)*0.23;
+            gl_FragColor=vec4(v_color*(0.55+0.5*diffuse)+vec3(shine),1.0);
+            return;
+          }
           vec3 light=normalize(vec3(-0.45,0.8,0.72));
           vec3 view=normalize(vec3(0.0,0.0,10.0)-v_world);
           float diffuse=max(dot(normal,light),0.0);
@@ -201,14 +218,14 @@
       gl.deleteShader(vertex);gl.deleteShader(fragment);
       if (!gl.getProgramParameter(program,gl.LINK_STATUS)) throw new Error('Cube shader linking failed');
       gl.useProgram(program);
-      locations={position:gl.getAttribLocation(program,'a_position'),normal:gl.getAttribLocation(program,'a_normal'),color:gl.getAttribLocation(program,'a_color'),model:gl.getUniformLocation(program,'u_model'),projectionView:gl.getUniformLocation(program,'u_projectionView'),lightTheme:gl.getUniformLocation(program,'u_lightTheme')};
+      locations={position:gl.getAttribLocation(program,'a_position'),normal:gl.getAttribLocation(program,'a_normal'),color:gl.getAttribLocation(program,'a_color'),model:gl.getUniformLocation(program,'u_model'),projectionView:gl.getUniformLocation(program,'u_projectionView'),lightTheme:gl.getUniformLocation(program,'u_lightTheme'),classic:gl.getUniformLocation(program,'u_classic')};
       vertexBuffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,vertexBuffer);gl.bufferData(gl.ARRAY_BUFFER,packed.data,gl.STATIC_DRAW);
       gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);
       // Отсечение граней не нужно: накладки и фаски имеют явные нормали.
       gl.clearColor(0,0,0,0);
     }
     function refreshTheme() {
-      meshes=cube.cubies.map(cubie=>({cubie,data:makeCubieMesh(cubie.home),buffer:null}));
+      meshes=cube.cubies.map(cubie=>({cubie,data:makeCubieMesh(cubie.home,mobileAuto),buffer:null}));
       packed=packMeshData(meshes.map(mesh=>mesh.data));
       if (gl&&locations) {
         gl.bindBuffer(gl.ARRAY_BUFFER,vertexBuffer);gl.bufferData(gl.ARRAY_BUFFER,packed.data,gl.STATIC_DRAW);
@@ -233,6 +250,10 @@
     function resetSequence() {
       cube.reset();index=0;active=null;queue=inverseMoves(SCRAMBLE);phase='solve';wait=900;
       completedState=-1;appliedProgress=-1;
+      canvas.dataset.animationMode=mobileAuto?'auto':'scroll';
+      canvas.dataset.presentation=mobileAuto?'classic':'cinematic';
+      if(mobileAuto){delete canvas.dataset.solveProgress;canvas.dataset.phase='solve';canvas.dataset.moveIndex='0';canvas.dataset.solved=String(motion.matches);}
+      else {delete canvas.dataset.phase;delete canvas.dataset.moveIndex;}
       if (!motion.matches) SCRAMBLE.forEach(move=>cube.turn(move));
       status.textContent=motion.matches?'ВСЁ НА СВОИХ МЕСТАХ':'СОБИРАЕМ ПО ДЕТАЛЯМ';
     }
@@ -280,6 +301,7 @@
             wait=phase==='solved'?2600:950;
             status.textContent=phase==='solved'?'ВСЁ НА СВОИХ МЕСТАХ':'СОБИРАЕМ ПО ДЕТАЛЯМ';
           }
+          if(mobileAuto){canvas.dataset.phase=phase;canvas.dataset.moveIndex=String(index);canvas.dataset.solved=String(cube.isSolved());}
         }
         return;
       }
@@ -288,16 +310,22 @@
       if (phase==='solved') {queue=SCRAMBLE;phase='scramble';index=0;status.textContent='НОВАЯ ЗАДАЧА';}
       else if (phase==='scrambled') {queue=inverseMoves(SCRAMBLE);phase='solve';index=0;}
       active={move:queue[index],elapsed:0,duration:phase==='solve'?700:340};
+      if(mobileAuto){canvas.dataset.phase=phase;canvas.dataset.moveIndex=String(index);if(phase==='scramble')canvas.dataset.solved='false';}
     }
     function modelMatrices() {
-      const yaw=-.62+(motion.matches?0:scrollProgress*TAU*(navCube ? .65 : .72)+(cinematic?pageProgress*TAU*.8:0)+(navCube?0:elapsed*.000035))+tiltX*.18;
-      const pitch=.48+(motion.matches?0:Math.sin(scrollProgress*Math.PI)*.3+Math.sin(elapsed*.00012)*.035)+tiltY*.12;
+      const yaw=mobileAuto?-.62+Math.sin(elapsed*.00018)*.22+tiltX*.12:-.62+(motion.matches?0:scrollProgress*TAU*(navCube ? .65 : .72)+(cinematic?pageProgress*TAU*.8:0)+(navCube?0:elapsed*.000035))+tiltX*.18;
+      const pitch=mobileAuto?.48+Math.sin(elapsed*.00012)*.045+tiltY*.09:.48+(motion.matches?0:Math.sin(scrollProgress*Math.PI)*.3+Math.sin(elapsed*.00012)*.035)+tiltY*.12;
       const global=multiply(translation(0,.08+Math.sin(elapsed*.0007)*.055,0),multiply(rotation(0,pitch),rotation(1,yaw)));
       const p=active?Math.min(active.elapsed/active.duration,1):0;
       const ease=p*p*(3-2*p);
       const layer=active?rotation(active.move.axis,active.move.direction*Math.PI/2*ease):null;
       return meshes.map(mesh=>{
         const cubie=mesh.cubie;
+        if(mobileAuto){
+          let local=multiply(translation(...cubie.position),cubie.orientation);
+          if(active&&cubie.position[active.move.axis]===active.move.layer)local=multiply(layer,local);
+          return multiply(global,local);
+        }
         const progress=Math.max(0,Math.min(1,scrollProgress/.5));
         const explosion=cinematic&&!motion.matches?1-progress*progress*(3-2*progress):0;
         const separation=!navCube&&!motion.matches?1+(cinematic?1.05*explosion:.1*(1-scrollProgress)):1;
@@ -336,9 +364,10 @@
       if (!gl) {drawFallback(models);return;}
       gl.viewport(0,0,canvas.width,canvas.height);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.useProgram(program);
       gl.uniform1f(locations.lightTheme,document.documentElement.dataset.theme==='light'?1:0);
+      gl.uniform1f(locations.classic,mobileAuto?1:0);
       // Размер кубика ограничен меньшей стороной блока, в том числе на телефоне.
       const aspect=width/height;
-      const baseDistance=cinematic?10.7+(1-scrollProgress)*3.2:9.8;
+      const baseDistance=mobileAuto?9.4:cinematic?10.7+(1-scrollProgress)*3.2:9.8;
       const distance=navCube?8.0:(aspect<1?baseDistance/aspect:baseDistance);
       gl.uniformMatrix4fv(locations.projectionView,false,multiply(perspective(Math.PI/5,aspect,.1,100),translation(0,0,-distance)));
       gl.bindBuffer(gl.ARRAY_BUFFER,vertexBuffer);
@@ -351,10 +380,10 @@
     }
     function resize() {
       width=visual.clientWidth;height=visual.clientHeight;
-      dpr=Math.min(window.devicePixelRatio||1,1.75);
+      dpr=Math.min(window.devicePixelRatio||1,mobileAuto?1.5:1.75);
       const pixelWidth=Math.max(1,Math.round(width*dpr)),pixelHeight=Math.max(1,Math.round(height*dpr));
       if(canvas.width!==pixelWidth||canvas.height!==pixelHeight){canvas.width=pixelWidth;canvas.height=pixelHeight;}
-      measureScrollRange();
+      if(scrollDriven)measureScrollRange();
       readScrollTarget();
       draw();
     }
@@ -362,7 +391,7 @@
       frame=0;
       if (!visible||document.hidden||motion.matches||lost) {lastTime=0;return;}
       if(lastTime&&time-lastTime<(gl?(navCube?0:30):50)){frame=requestAnimationFrame(tick);return;}
-      const delta=lastTime?Math.min(70,time-lastTime):0;lastTime=time;elapsed+=delta;
+      const delta=lastTime?Math.min(mobileAuto?50:70,time-lastTime):0;lastTime=time;elapsed+=delta;
       tiltX+=(pointerX-tiltX)*.06;tiltY+=(pointerY-tiltY)*.06;
       if (scrollDriven) {
         scrollProgress+=(targetProgress-scrollProgress)*.16;
@@ -393,9 +422,15 @@
     if ('IntersectionObserver' in window) new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;sync();}).observe(visual);
     document.addEventListener('visibilitychange',sync);
     motion.addEventListener('change',()=>{resetSequence();sync();});
+    mobile.addEventListener('change',()=>{
+      const next=!navCube&&mobile.matches;
+      if(next===mobileAuto)return;
+      mobileAuto=next;cinematic=requestedCinematic&&!mobileAuto;scrollDriven=requestedScrollDriven&&!mobileAuto;
+      scrollProgress=targetProgress=pageProgress=0;resetSequence();refreshTheme();resize();sync();
+    });
     window.addEventListener('vorby-theme-change',refreshTheme);
     window.addEventListener('vorby-layout-measured',event=>{pageRange=event.detail.maxScroll;available=navCube?pageRange:event.detail.assemblyRange;readScrollTarget();});
-    if (scrollDriven) window.addEventListener('scroll',readScrollTarget,{passive:true});
+    if (requestedScrollDriven) window.addEventListener('scroll',readScrollTarget,{passive:true});
     canvas.addEventListener('webglcontextlost',event=>{event.preventDefault();lost=true;sync();});
     canvas.addEventListener('webglcontextrestored',()=>{lost=false;setupGL();resize();sync();});
     window.addEventListener('pagehide',()=>{if(frame)cancelAnimationFrame(frame);frame=0;lastTime=0;});
