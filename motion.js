@@ -98,15 +98,16 @@
     let width=1,height=1;
     card.addEventListener('pointermove', event => {
       if (reduced.matches || !finePointer.matches) return;
-      const rect = card.getBoundingClientRect();
-      width=rect.width;height=rect.height;
-      x = event.clientX - rect.left; y = event.clientY - rect.top;
+      x = event.clientX; y = event.clientY;
       if (!pointerFrame) pointerFrame = requestAnimationFrame(() => {
         pointerFrame = 0;
-        card.style.setProperty('--pointer-x', x + 'px');
-        card.style.setProperty('--pointer-y', y + 'px');
-        card.style.setProperty('--card-rx',((.5-y/height)*5).toFixed(2)+'deg');
-        card.style.setProperty('--card-ry',((x/width-.5)*6).toFixed(2)+'deg');
+        if(reduced.matches||!finePointer.matches||document.hidden)return;
+        const rect=card.getBoundingClientRect();width=rect.width;height=rect.height;
+        const localX=x-rect.left,localY=y-rect.top;
+        card.style.setProperty('--pointer-x', localX + 'px');
+        card.style.setProperty('--pointer-y', localY + 'px');
+        card.style.setProperty('--card-rx',((.5-localY/height)*5).toFixed(2)+'deg');
+        card.style.setProperty('--card-ry',((localX/width-.5)*6).toFixed(2)+'deg');
       });
     });
     card.addEventListener('pointerleave',()=>{if(pointerFrame)cancelAnimationFrame(pointerFrame);pointerFrame=0;card.style.setProperty('--card-rx','0deg');card.style.setProperty('--card-ry','0deg');});

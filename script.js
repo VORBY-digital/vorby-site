@@ -73,7 +73,8 @@ const SITE_CONFIG = {
   'use strict';
   const $ = selector => document.querySelector(selector);
   const $$ = selector => [...document.querySelectorAll(selector)];
-  const money = value => new Intl.NumberFormat('ru-RU', {maximumFractionDigits:0}).format(value) + ' ₽';
+  const moneyFormat = new Intl.NumberFormat('ru-RU', {maximumFractionDigits:0});
+  const money = value => moneyFormat.format(value) + ' ₽';
   const fromPrice = project => project.fromPrice ?? project.price;
   const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const state = {project:'site', selections:{site:new Set(), design:new Set(), support:new Set()}};
@@ -339,8 +340,8 @@ const SITE_CONFIG = {
   document.addEventListener('click', event => {if (!event.target.closest('.header')) closeMenu();});
 
   // Плавное появление блоков. Без JavaScript всё содержимое остаётся видимым.
-  if ('IntersectionObserver' in window && !motion.matches) {
-    document.documentElement.classList.add('js-motion');
+  if ('IntersectionObserver' in window) {
+    document.documentElement.classList.toggle('js-motion', !motion.matches);
     const revealObserver = new IntersectionObserver(entries => {
       entries.forEach(entry => {if (entry.isIntersecting) {entry.target.classList.add('visible'); revealObserver.unobserve(entry.target);}});
     }, {threshold:.08});
@@ -359,13 +360,15 @@ const SITE_CONFIG = {
 
   const progress = $('.page-progress');
   let scrollScheduled = false;
+  let progressRange=Math.max(0,document.documentElement.scrollHeight-window.innerHeight);
   function updateProgress() {
-    const available = document.documentElement.scrollHeight - window.innerHeight;
+    const available = progressRange;
     progress.style.transform = 'scaleX(' + (available > 0 ? Math.min(1,window.scrollY / available) : 0) + ')';
     scrollScheduled = false;
   }
   window.addEventListener('scroll', () => {if (!scrollScheduled) {scrollScheduled = true; requestAnimationFrame(updateProgress);}}, {passive:true});
-  window.addEventListener('resize', updateProgress);
+  window.addEventListener('resize', () => {progressRange=Math.max(0,document.documentElement.scrollHeight-window.innerHeight);updateProgress();});
+  window.addEventListener('vorby-layout-measured', event => {progressRange=event.detail.maxScroll;updateProgress();});
   updateProgress();
 
   // Меняющийся текст без сдвига соседних блоков.
@@ -373,8 +376,10 @@ const SITE_CONFIG = {
   const words = ['сайт.', 'дизайн.'];
   let wordIndex = 0;
   let wordTimer;
+  let heroVisible=true;
+  if('IntersectionObserver' in window)new IntersectionObserver(entries=>{heroVisible=entries[0].isIntersecting;}).observe($('#home'));
   function rotateWord() {
-    if (motion.matches || document.hidden) return;
+    if (motion.matches || document.hidden || !heroVisible) return;
     word.className = 'word-out';
     wordTimer = setTimeout(() => {wordIndex = (wordIndex + 1) % words.length; word.textContent = words[wordIndex]; word.className = 'word-in';}, 250);
   }
